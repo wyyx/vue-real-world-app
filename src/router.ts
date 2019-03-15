@@ -1,24 +1,68 @@
-import Vue from "vue";
-import Router from "vue-router";
-import Home from "./views/Home.vue";
+import Vue from 'vue'
+import Router from 'vue-router'
+import Home from './views/Home.vue'
 
-Vue.use(Router);
+Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-      path: "/",
-      name: "home",
+      path: '/',
+      name: 'home',
       component: Home
     },
     {
-      path: "/about",
-      name: "about",
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
+      path: '/login',
+      name: 'login',
       component: () =>
-        import(/* webpackChunkName: "about" */ "./views/About.vue")
+        import(/* webpackChunkName: "login" */ './views/Login.vue')
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () =>
+        import(/* webpackChunkName: "register" */ './views/Register.vue')
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: () =>
+        import(/* webpackChunkName: "settings" */ './views/Settings.vue')
+    },
+    {
+      name: 'article',
+      path: '/articles/:slug',
+      component: () =>
+        import(/* webpackChunkName: "article" */ './views/Article.vue'),
+      props: true
+    },
+    {
+      path: '/@:username',
+      component: () => import('@/views/Profile.vue'),
+      children: [
+        {
+          path: '',
+          name: 'profile',
+          component: () => import('@/views/ProfileArticles.vue')
+        },
+        {
+          name: 'profile-favorites',
+          path: 'favorites',
+          component: () => import('@/views/ProfileFavorited.vue')
+        }
+      ]
+    },
+    {
+      name: 'article-create',
+      path: '/editor',
+      props: true,
+      component: () => import('@/views/ArticleCreate.vue')
+    },
+    {
+      name: 'article-edit',
+      path: '/editor/:articleId',
+      props: true,
+      component: () => import('@/views/ArticleEdit.vue')
     }
   ]
-});
+})
