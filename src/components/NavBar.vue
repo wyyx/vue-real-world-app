@@ -57,7 +57,7 @@ import {
   isAuthenticated,
   userName
 } from '@/store/auth/auth.getters'
-import { LOGOUT } from '@/store/auth/auth.actions'
+import { LOGOUT_ACTION } from '@/store/auth/auth.actions'
 
 export default Vue.extend({
   data: function() {
@@ -68,7 +68,7 @@ export default Vue.extend({
   },
   methods: {
     logout() {
-      this.$store.dispatch(LOGOUT)
+      this.$store.dispatch(LOGOUT_ACTION)
     }
   }
 })

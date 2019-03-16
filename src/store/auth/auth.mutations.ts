@@ -1,22 +1,32 @@
 import { AuthState } from '.'
 import { User } from '@/models/user.model'
 
-export const SET_ERROR = 'set error'
-export const SET_AUTH = 'set auth'
-export const PURGE_AUTH = 'purge auth'
+export const ADD_ERROR = 'add error mutation'
+export const LOGIN = 'login mutation'
+export const LOGIN_SUCCESS = 'login success mutation'
+export const LOGIN_FAIL = 'login fail mutation'
+export const LOGOUT = 'logout mutation'
 
 export const mutations = {
-  [SET_ERROR](state: AuthState, error) {
-    state.errors = error
+  [ADD_ERROR](state: AuthState, error) {
+    state.errors.push(error)
   },
-  [SET_AUTH](state: AuthState, user: User) {
+  [LOGIN](state: AuthState) {
+    state.isLogging = true
+  },
+  [LOGIN_SUCCESS](state: AuthState, user: User) {
     state.isAuthenticated = true
     state.user = user
     state.errors = []
+    state.isLogging = false
   },
-  [PURGE_AUTH](state: AuthState) {
+  [LOGIN_FAIL](state: AuthState, user: User) {
+    state.isLogging = false
+  },
+  [LOGOUT](state: AuthState) {
     state.isAuthenticated = false
     state.user = null
     state.errors = []
+    state.isLogging = false
   }
 }

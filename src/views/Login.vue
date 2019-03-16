@@ -33,12 +33,14 @@
                 v-model="password"
               />
             </fieldset>
-            <button @click="login" class="btn btn-lg btn-primary pull-xs-right">
-              <span v-if="isLogging"
-                ><font-awesome-icon class="fa-spin" icon="spinner"
-              /></span>
-              Sign in
-            </button>
+            <div class="text-center">
+              <button @click="login" class="btn btn-lg btn-primary pull-xs">
+                <span v-if="isLogging"
+                  ><font-awesome-icon class="fa-spin" icon="spinner"
+                /></span>
+                <span v-else> Sign in</span>
+              </button>
+            </div>
           </form>
         </div>
       </div>
@@ -48,9 +50,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { LOGIN } from '@/store/auth/auth.actions'
 import { mapGetters } from 'vuex'
 import { authGetters, errors, isLogging } from '@/store/auth/auth.getters'
+import { LOGIN_ACTION } from '@/store/auth/auth.actions'
 
 export default Vue.extend({
   data: function() {
@@ -65,7 +67,7 @@ export default Vue.extend({
 
   methods: {
     login() {
-      this.$store.dispatch(LOGIN, {
+      this.$store.dispatch(LOGIN_ACTION, {
         email: this.email,
         password: this.password
       })
