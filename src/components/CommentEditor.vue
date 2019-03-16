@@ -24,7 +24,7 @@
 
 <script>
 import RwvListErrors from '@/components/ListErrors'
-import { COMMENT_CREATE } from '@/store/actions.type'
+// import { COMMENT_CREATE } from '@/store/actions.type'
 
 export default {
   name: 'RwvCommentEditor',

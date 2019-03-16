@@ -4,7 +4,7 @@ import Home from './views/Home.vue'
 
 Vue.use(Router)
 
-export default new Router({
+export const router = new Router({
   routes: [
     {
       path: '/',
@@ -46,8 +46,8 @@ export default new Router({
           component: () => import('@/views/ProfileArticles.vue')
         },
         {
-          name: 'profile-favorites',
           path: 'favorites',
+          name: 'profile-favorites',
           component: () => import('@/views/ProfileFavorited.vue')
         }
       ]

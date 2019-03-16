@@ -1,28 +1,48 @@
 <template>
   <nav class="navbar navbar-light">
     <div class="container">
-      <router-link class="navbar-brand" to="/">Mediumly</router-link>
+      <router-link class="navbar-brand" to="/">Mediumly </router-link>
       <ul class="nav navbar-nav pull-xs-right">
         <li class="nav-item">
           <!-- Add "active" class when you're on that page" -->
-          <router-link class="nav-link active" :to="{ name: 'home' }">
+          <router-link class="nav-link px-5 active" :to="{ name: 'home' }">
             Home
           </router-link>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="">
-            <i class="ion-compose"></i>&nbsp;New Post
+          <a class="nav-link px-5" href="">
+            <i class="ion-compose"></i>New Post
           </a>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link" :to="{ name: 'settings' }">
-            <i class="ion-gear-a"></i>&nbsp;Settings
+          <router-link class="nav-link px-5" :to="{ name: 'settings' }">
+            <i class="ion-gear-a"></i>Settings
           </router-link>
         </li>
-        <li class="nav-item">
-          <router-link class="nav-link" :to="{ name: 'register' }">
-            Sign up
-          </router-link>
+        <template v-if="!isAuthenticated">
+          <li class="nav-item">
+            <router-link class="nav-link px-5" :to="{ name: 'login' }">
+              Sign in
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link px-5" :to="{ name: 'register' }">
+              Sign up
+            </router-link>
+          </li>
+        </template>
+        <li v-if="isAuthenticated" class="nav-item link">
+          <router-link
+            class="nav-link px-5"
+            :to="{
+              name: 'profile',
+              params: { username: userName }
+            }"
+            >[{{ userName }}]</router-link
+          >
+        </li>
+        <li v-if="isAuthenticated" class="nav-item link" @click="logout">
+          <a class="nav-link px-5"> <i class="ion-gear-a"></i>Logout </a>
         </li>
       </ul>
     </div>
@@ -30,12 +50,28 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-import { UPDATE_USER } from '@/store/auth/auth.actions'
-import { SET_ERROR } from '@/store/auth/auth.mutations'
+import Vue from 'vue'
+import { mapGetters } from 'vuex'
+import {
+  currentUser,
+  isAuthenticated,
+  userName
+} from '@/store/auth/auth.getters'
+import { LOGOUT } from '@/store/auth/auth.actions'
 
-@Component({})
-export default class ComponentName extends Vue {}
+export default Vue.extend({
+  data: function() {
+    return {}
+  },
+  computed: {
+    ...mapGetters([currentUser, isAuthenticated, userName])
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch(LOGOUT)
+    }
+  }
+})
 </script>
 
 <style lang="scss" scoped>

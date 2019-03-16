@@ -1,23 +1,25 @@
 import { mutations } from './auth.mutations'
 import { actions } from './auth.actions'
-import { getters } from './auth.getters'
+import { authGetters } from './auth.getters'
 import { User } from '@/models/user.model'
 
 export interface AuthState {
-  errors: any
+  errors: any[]
   user: User
   isAuthenticated: boolean
+  isLogging: boolean
 }
 
 const initialState: AuthState = {
-  errors: null,
+  errors: [],
   user: null,
-  isAuthenticated: false
+  isAuthenticated: false,
+  isLogging: false
 }
 
 export const auth = {
   state: initialState,
   mutations,
   actions,
-  getters
+  getters: authGetters
 }

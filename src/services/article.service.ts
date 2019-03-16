@@ -1,5 +1,5 @@
 import { Article } from '@/models/article.model'
-import { http } from './api.service'
+import { http } from './http.service'
 
 export const articleService = {
   query(type, params) {

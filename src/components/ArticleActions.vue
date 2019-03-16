@@ -39,54 +39,56 @@
   </span>
 </template>
 
+//
 <script>
-import { mapGetters } from 'vuex'
-import {
-  FAVORITE_ADD,
-  FAVORITE_REMOVE,
-  ARTICLE_DELETE,
-  FETCH_PROFILE_FOLLOW,
-  FETCH_PROFILE_UNFOLLOW
-} from '@/store/actions.type'
+// import { mapGetters } from 'vuex'
+// import {
+//   FAVORITE_ADD,
+//   FAVORITE_REMOVE,
+//   ARTICLE_DELETE,
+//   FETCH_PROFILE_FOLLOW,
+//   FETCH_PROFILE_UNFOLLOW
+// } from '@/store/actions.type'
 
-export default {
-  name: 'RwvArticleActions',
-  props: {
-    article: { type: Object, required: true },
-    canModify: { type: Boolean, required: true }
-  },
-  computed: {
-    ...mapGetters(['profile', 'isAuthenticated'])
-  },
-  methods: {
-    toggleFavorite() {
-      if (!this.isAuthenticated) {
-        this.$router.push({ name: 'login' })
-        return
-      }
-      const action = this.article.favorited ? FAVORITE_REMOVE : FAVORITE_ADD
-      this.$store.dispatch(action, this.article.slug)
-    },
-    toggleFollow() {
-      if (!this.isAuthenticated) {
-        this.$router.push({ name: 'login' })
-        return
-      }
-      const action = this.article.following
-        ? FETCH_PROFILE_UNFOLLOW
-        : FETCH_PROFILE_FOLLOW
-      this.$store.dispatch(action, {
-        username: this.profile.username
-      })
-    },
-    async deleteArticle() {
-      try {
-        await this.$store.dispatch(ARTICLE_DELETE, this.article.slug)
-        this.$router.push('/')
-      } catch (err) {
-        console.error(err)
-      }
-    }
-  }
-}
+// export default {
+//   name: 'RwvArticleActions',
+//   props: {
+//     article: { type: Object, required: true },
+//     canModify: { type: Boolean, required: true }
+//   },
+//   computed: {
+//     ...mapGetters(['profile', 'isAuthenticated'])
+//   },
+//   methods: {
+//     toggleFavorite() {
+//       if (!this.isAuthenticated) {
+//         this.$router.push({ name: 'login' })
+//         return
+//       }
+//       const action = this.article.favorited ? FAVORITE_REMOVE : FAVORITE_ADD
+//       this.$store.dispatch(action, this.article.slug)
+//     },
+//     toggleFollow() {
+//       if (!this.isAuthenticated) {
+//         this.$router.push({ name: 'login' })
+//         return
+//       }
+//       const action = this.article.following
+//         ? FETCH_PROFILE_UNFOLLOW
+//         : FETCH_PROFILE_FOLLOW
+//       this.$store.dispatch(action, {
+//         username: this.profile.username
+//       })
+//     },
+//     async deleteArticle() {
+//       try {
+//         await this.$store.dispatch(ARTICLE_DELETE, this.article.slug)
+//         this.$router.push('/')
+//       } catch (err) {
+//         console.error(err)
+//       }
+//     }
+//   }
+// }
+//
 </script>

@@ -1,0 +1,28 @@
+# get articles
+GET https://conduit.productionready.io/api/articles HTTP/1.1
+###
+
+# login
+POST https://conduit.productionready.io/api/users/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "user":{
+    "email": "gnehcyx@163.com",
+    "password": "12345678"
+  }
+}
+###
+
+# register
+POST https://conduit.productionready.io/api/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "user":{
+    "username": "cheng",
+    "email": "gnehcyx@163.com",
+    "password": "12345678"
+  }
+}
+###

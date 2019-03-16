@@ -10,8 +10,10 @@
             </router-link>
           </p>
 
-          <ul class="error-messages">
-            <li>That email is already taken</li>
+          <ul class="error-messages" v-if="errors.length > 0">
+            <li v-for="error in errors" :key="error" :v-text="error">
+              That email or password is invalid
+            </li>
           </ul>
 
           <form>
@@ -20,6 +22,7 @@
                 class="form-control form-control-lg"
                 type="text"
                 placeholder="Email"
+                v-model="email"
               />
             </fieldset>
             <fieldset class="form-group">
@@ -27,10 +30,14 @@
                 class="form-control form-control-lg"
                 type="password"
                 placeholder="Password"
+                v-model="password"
               />
             </fieldset>
-            <button class="btn btn-lg btn-primary pull-xs-right">
-              Sign up
+            <button @click="login" class="btn btn-lg btn-primary pull-xs-right">
+              <span v-if="isLogging"
+                ><font-awesome-icon class="fa-spin" icon="spinner"
+              /></span>
+              Sign in
             </button>
           </form>
         </div>
@@ -40,10 +47,31 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { LOGIN } from '@/store/auth/auth.actions'
+import { mapGetters } from 'vuex'
+import { authGetters, errors, isLogging } from '@/store/auth/auth.getters'
 
-@Component({})
-export default class ComponentName extends Vue {}
+export default Vue.extend({
+  data: function() {
+    return {
+      email: '',
+      password: ''
+    }
+  },
+  computed: {
+    ...mapGetters([errors, isLogging])
+  },
+
+  methods: {
+    login() {
+      this.$store.dispatch(LOGIN, {
+        email: this.email,
+        password: this.password
+      })
+    }
+  }
+})
 </script>
 
 <style></style>

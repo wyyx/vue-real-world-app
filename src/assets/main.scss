@@ -1,7 +1,8 @@
 @import './theme.css';
-@import './fonts/Sniglet/sniglet.font.scss';
-@import './fonts/Roboto_Slab/Roboto_Slab.font.scss';
-@import './fonts//Quattrocento_Sans/Quattrocento_Sans.font.scss';
+@import './fonts/Quattrocento_Sans/Quattrocento_Sans.font.scss';
+@import './styles/common.scss';
+@import './styles/spacing.scss';
+@import './styles/text.scss';
 
 body {
   font-family: 'Quattrocento Sans', sans-serif;

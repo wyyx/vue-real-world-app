@@ -1,4 +1,4 @@
-import { http } from './api.service'
+import { http } from './http.service'
 
 export const favoriteService = {
   add(slug) {

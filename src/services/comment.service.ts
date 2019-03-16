@@ -1,4 +1,4 @@
-import { http } from './api.service'
+import { http } from './http.service'
 import { Comment } from '@/models/comment.model'
 
 export const CommentsService = {
