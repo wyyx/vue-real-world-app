@@ -1,13 +1,32 @@
-import { Article } from '@/models/article.model'
+import { Article, ArticlesResponse } from '@/models/article.model'
 import { http } from './http.service'
+import { ArticleQuery } from '@/models/article-query.model'
 
 export const articleService = {
-  query(type, params) {
-    return http.get('articles' + (type === 'feed' ? '/feed' : ''), {
+  getGlobalArticles(params: ArticleQuery) {
+    // append tags
+    const searchParams = new URLSearchParams()
+    params.tags.forEach(tag => searchParams.append('tag', tag))
+
+    // append others
+    const others = { ...params, tag: params.tags }
+    delete others.tags
+    for (const key in others) {
+      if (others.hasOwnProperty(key)) {
+        searchParams.append(key, others[key])
+      }
+    }
+
+    return http.get('articles', {
+      params: searchParams
+    })
+  },
+  getUserArticles(params) {
+    return http.get<ArticlesResponse>('articles/feed', {
       params
     })
   },
-  get(id: string) {
+  getArticleById(id: string) {
     return http.get(`articles/${id}`)
   },
   create(article: Article) {

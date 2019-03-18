@@ -1,124 +1,77 @@
 <template>
-  <div>
-    <div v-if="isLoading" class="article-preview">Loading articles...</div>
-    <div v-else>
-      <div v-if="articles.length === 0" class="article-preview">
-        No articles are here... yet.
-      </div>
-      <RwvArticlePreview
-        v-for="(article, index) in articles"
-        :article="article"
-        :key="article.title + index"
-      />
-      <VPagination :pages="pages" :currentPage.sync="currentPage" />
+  <div class="host" v-if="articles.length > 0">
+    <ArticlePreview
+      v-for="(article, index) in articles"
+      :article="article"
+      :key="article.title + index"
+    />
+    <div class="pagination-wrapper">
+      <Pagination
+        class="pagination"
+        :totalItems="articlesCount"
+        :currentPage="1"
+        :visiblePages="5"
+        :showFirstAndLastNavigator="true"
+        @page="onPageUpdate($event)"
+      ></Pagination>
     </div>
   </div>
 </template>
 
-<script>
-import { mapGetters } from 'vuex'
-import RwvArticlePreview from './VArticlePreview'
-import VPagination from './VPagination'
+<script lang="ts">
+import ArticlePreview from './ArticlePreview.vue'
+import Pagination from '@/components/Pagination.vue'
+import { UPDATE_ARTICLE_QUERY } from '@/store/article/article.mutations'
+import { Page } from '@/models/page.model'
 
 export default {
-  name: 'RwvArticleList',
+  name: 'ArticleList',
   components: {
-    RwvArticlePreview,
-    VPagination
+    ArticlePreview,
+    Pagination
   },
   props: {
-    type: {
-      type: String,
+    articles: {
+      type: Array,
       required: false,
-      default: 'all'
-    },
-    author: {
-      type: String,
-      required: false
-    },
-    tag: {
-      type: String,
-      required: false
-    },
-    favorited: {
-      type: String,
-      required: false
+      default: function() {
+        return []
+      }
     },
     itemsPerPage: {
       type: Number,
       required: false,
       default: 10
+    },
+    articlesCount: {
+      type: Number,
+      required: true
     }
-  },
-  data() {
-    return {
-      currentPage: 1
-    }
-  },
-  computed: {
-    listConfig() {
-      const { type } = this
-      const filters = {
-        offset: (this.currentPage - 1) * this.itemsPerPage,
-        limit: this.itemsPerPage
-      }
-      if (this.author) {
-        filters.author = this.author
-      }
-      if (this.tag) {
-        filters.tag = this.tag
-      }
-      if (this.favorited) {
-        filters.favorited = this.favorited
-      }
-      return {
-        type,
-        filters
-      }
-    },
-    pages() {
-      if (this.isLoading || this.articlesCount <= this.itemsPerPage) {
-        return []
-      }
-      return [
-        ...Array(Math.ceil(this.articlesCount / this.itemsPerPage)).keys()
-      ].map(e => e + 1)
-    },
-    ...mapGetters(['articlesCount', 'isLoading', 'articles'])
-  },
-  watch: {
-    currentPage(newValue) {
-      this.listConfig.filters.offset = (newValue - 1) * this.itemsPerPage
-      this.fetchArticles()
-    },
-    type() {
-      this.resetPagination()
-      this.fetchArticles()
-    },
-    author() {
-      this.resetPagination()
-      this.fetchArticles()
-    },
-    tag() {
-      this.resetPagination()
-      this.fetchArticles()
-    },
-    favorited() {
-      this.resetPagination()
-      this.fetchArticles()
-    }
-  },
-  mounted() {
-    this.fetchArticles()
   },
   methods: {
-    fetchArticles() {
-      this.$store.dispatch(FETCH_ARTICLES, this.listConfig)
-    },
-    resetPagination() {
-      this.listConfig.offset = 0
-      this.currentPage = 1
+    onPageUpdate({ page, pageSize }: Page) {
+      ;(this as any).$store.commit(UPDATE_ARTICLE_QUERY, {
+        offset: (page - 1) * pageSize,
+        limit: pageSize
+      })
     }
   }
 }
 </script>
+<style lang="scss" scoped>
+.host {
+  position: relative;
+}
+
+.pagination {
+  position: fixed;
+  bottom: 10px;
+  margin: 0px !important;
+}
+
+.pagination-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+</style>

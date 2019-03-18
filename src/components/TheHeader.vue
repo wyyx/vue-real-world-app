@@ -86,11 +86,11 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { currentUser, isAuthenticated } from '@/store/auth/auth.getters'
 
 export default {
-  name: 'RwvHeader',
   computed: {
-    ...mapGetters(['currentUser', 'isAuthenticated'])
+    ...mapGetters([currentUser, isAuthenticated])
   }
 }
 </script>

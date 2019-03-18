@@ -1,8 +1,10 @@
-@import './theme.css';
 @import './fonts/Quattrocento_Sans/Quattrocento_Sans.font.scss';
 @import './styles/common.scss';
 @import './styles/spacing.scss';
 @import './styles/text.scss';
+@import './styles/theme.css';
+@import './styles/bootstrap.scss';
+@import './styles/default.scss';
 
 body {
   font-family: 'Quattrocento Sans', sans-serif;

@@ -10,8 +10,9 @@
             </router-link>
           </p>
 
-          <ul class="error-messages" v-if="errors.length > 0">
-            <li v-for="error in errors" :key="error" :v-text="error">
+          <ul class="error-messages">
+            <li v-for="error in ERRORS" :key="error" v-text="error">
+              {{ error }}
               That email or password is invalid
             </li>
           </ul>
@@ -35,7 +36,7 @@
             </fieldset>
             <div class="text-center">
               <button @click="login" class="btn btn-lg btn-primary pull-xs">
-                <span v-if="isLogging"
+                <span v-if="IS_LOGGING"
                   ><font-awesome-icon class="fa-spin" icon="spinner"
                 /></span>
                 <span v-else> Sign in</span>
@@ -51,8 +52,9 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
-import { authGetters, errors, isLogging } from '@/store/auth/auth.getters'
+import { ERRORS, IS_LOGGING } from '@/store/auth/auth.getters'
 import { LOGIN_ACTION } from '@/store/auth/auth.actions'
+import { CLEAR_ERROR } from '@/store/auth/auth.mutations'
 
 export default Vue.extend({
   data: function() {
@@ -62,9 +64,11 @@ export default Vue.extend({
     }
   },
   computed: {
-    ...mapGetters([errors, isLogging])
+    ...mapGetters({
+      ERRORS,
+      IS_LOGGING
+    })
   },
-
   methods: {
     login() {
       this.$store.dispatch(LOGIN_ACTION, {
@@ -76,4 +80,4 @@ export default Vue.extend({
 })
 </script>
 
-<style></style>
+<style lang="scss" scoped></style>

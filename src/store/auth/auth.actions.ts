@@ -1,14 +1,26 @@
-import { jwtService } from '@/services/jwt.service'
-import { LOGIN_SUCCESS, ADD_ERROR, LOGOUT, LOGIN } from './auth.mutations'
-import { http, setOrUpdateHeader } from '@/services/http.service'
+import { User } from '@/models/user.model'
+import { router } from '@/router/router'
 import { authService } from '@/services/auth.service'
-import { router } from '@/router'
+import { setOrUpdateHeader } from '@/services/http.service'
+import { jwtService } from '@/services/jwt.service'
+import {
+  ADD_ERROR,
+  LOGIN,
+  LOGIN_FAIL,
+  LOGIN_SUCCESS,
+  LOGOUT,
+  REGISTER,
+  REGISTER_FAIL,
+  REGISTER_SUCCESS,
+  UPDATE_USER_FAIL,
+  UPDATE_USER_SUCCESS
+} from './auth.mutations'
 
-export const LOGIN_ACTION = 'login action'
-export const LOGOUT_ACTION = 'logout action'
-export const REGISTER_ACTION = 'register action'
-export const CHECK_AUTH_ACTION = 'check auth action'
-export const UPDATE_USER_ACTION = 'update user action'
+export const LOGIN_ACTION = 'LOGIN_ACTION'
+export const LOGOUT_ACTION = 'LOGOUT_ACTION'
+export const REGISTER_ACTION = 'REGISTER_ACTION'
+export const CHECK_AUTH_ACTION = 'CHECK_AUTH_ACTION'
+export const UPDATE_USER_ACTION = 'UPDATE_USER_ACTION'
 
 export const actions = {
   [LOGIN_ACTION](context, credentials) {
@@ -23,7 +35,7 @@ export const actions = {
       })
       .then(() => router.push({ name: 'home' }))
       .catch(error => {
-        context.commit(ADD_ERROR, ['Email or password is invalid'])
+        context.commit(LOGIN_FAIL)
       })
   },
   [LOGOUT_ACTION](context) {
@@ -31,18 +43,16 @@ export const actions = {
     context.commit(LOGOUT)
   },
   [REGISTER_ACTION](context, credentials) {
-    return new Promise((resolve, reject) => {
-      authService
-        .login(credentials)
-        .then(({ data }) => {
-          context.commit(LOGIN_SUCCESS, data.user)
-          resolve(data)
-        })
-        .catch(({ response }) => {
-          context.commit(ADD_ERROR, response.data.errors)
-          reject(response)
-        })
-    })
+    context.commit(REGISTER)
+    authService
+      .register(credentials)
+      .then(({ data }) => {
+        context.commit(REGISTER_SUCCESS, data.user)
+      })
+      .then(() => router.push({ name: 'home' }))
+      .catch(({ response }) => {
+        context.commit(REGISTER_FAIL)
+      })
   },
   [CHECK_AUTH_ACTION](context) {
     if (jwtService.getToken()) {
@@ -58,20 +68,15 @@ export const actions = {
       context.commit(LOGOUT)
     }
   },
-  [UPDATE_USER_ACTION](context, payload) {
-    const { email, username, password, image, bio } = payload
-
-    const user = {
-      email,
-      username,
-      password,
-      bio,
-      image
-    }
-
-    return http.put('user', user).then(({ data }) => {
-      context.commit(LOGIN_SUCCESS, data.user)
-      return data
-    })
+  [UPDATE_USER_ACTION](context, user: User) {
+    authService
+      .updateUser(user)
+      .then(({ data }) => {
+        context.commit(UPDATE_USER_SUCCESS, data.user)
+        return data
+      })
+      .catch(err => {
+        context.commit(UPDATE_USER_FAIL)
+      })
   }
 }
