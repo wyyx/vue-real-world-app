@@ -28,14 +28,24 @@ Content-Type: application/json
 ###
 
 # get global articles
-GET  https://conduit.productionready.io/api/articles?offset=0&limit=5&tag=coffee&tag=cars HTTP/1.1
+GET  https://conduit.productionready.io/api/articles?offset=0&limit=5&tag=coffee&tag=cars&tag=dragon HTTP/1.1
 Content-Type: application/json
 ###
 
 # get user articles (feed)
 GET  https://conduit.productionready.io/api/articles/feed?offset=0&limit=5 HTTP/1.1
 Content-Type: application/json
-Authorization: Token eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NTEwMjAsInVzZXJuYW1lIjoiY2hlbmciLCJleHAiOjE1NTgwNTUwNDZ9.KhpFIdplXQIa-ugYLwcWvgFdY40cEWIpDyyK3AJqJaY
+Authorization: Token eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NTEwMjAsInVzZXJuYW1lIjoiY2hlbmciLCJleHAiOjE1NTkwMDc3NjZ9.5V6-9brhXeYkJAiyjhyp0y8OW3uSJA7xSZD2f31IzHo
+###
+
+# get my articles
+GET  https://conduit.productionready.io/api/articles?offset=0&limit=5&author=cheng HTTP/1.1
+Content-Type: application/json
+Authorization: Token eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NTEwMjAsInVzZXJuYW1lIjoiY2hlbmciLCJleHAiOjE1NTkwMDc3NjZ9.5V6-9brhXeYkJAiyjhyp0y8OW3uSJA7xSZD2f31IzHo
+###
+
+# get favorited articles
+GET  https://conduit.productionready.io/api/articles?offset=0&limit=5&favorited=jake HTTP/1.1
 ###
 
 

@@ -5177,7 +5177,7 @@ lodash.assign@^4.2.0:
   resolved "http://registry.npm.taobao.org/lodash.assign/download/lodash.assign-4.2.0.tgz#0d99f3ccd7a6d261d19bdaeb9245005d285808e7"
   integrity sha1-DZnzzNem0mHRm9rrkkUAXShYCOc=
 
-lodash.clonedeep@^4.3.2:
+lodash.clonedeep@^4.3.2, lodash.clonedeep@^4.5.0:
   version "4.5.0"
   resolved "http://registry.npm.taobao.org/lodash.clonedeep/download/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
   integrity sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8=
@@ -8514,6 +8514,11 @@ vary@~1.1.2:
   resolved "http://registry.npm.taobao.org/vary/download/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
 
+vee-validate@^2.2.0:
+  version "2.2.0"
+  resolved "http://registry.npm.taobao.org/vee-validate/download/vee-validate-2.2.0.tgz#0dcb6251a50cde9a3a1e924c917cc3d0a543b661"
+  integrity sha1-DctiUaUM3po6HpJMkXzD0KVDtmE=
+
 vendors@^1.0.0:
   version "1.0.2"
   resolved "http://registry.npm.taobao.org/vendors/download/vendors-1.0.2.tgz#7fcb5eef9f5623b156bcea89ec37d63676f21801"
@@ -8622,6 +8627,13 @@ vue@^2.6.6:
   version "2.6.8"
   resolved "http://registry.npm.taobao.org/vue/download/vue-2.6.8.tgz#f21cbc536bfc14f7d1d792a137bb12f69e60ea91"
   integrity sha1-8hy8U2v8FPfR15KhN7sS9p5g6pE=
+
+vuex-pathify@^1.2.1:
+  version "1.2.1"
+  resolved "http://registry.npm.taobao.org/vuex-pathify/download/vuex-pathify-1.2.1.tgz#29bea80fab121c6311ab7051df7e5c4a117890ce"
+  integrity sha1-Kb6oD6sSHGMRq3BR335cShF4kM4=
+  dependencies:
+    lodash.clonedeep "^4.5.0"
 
 vuex@^3.0.1:
   version "3.1.0"

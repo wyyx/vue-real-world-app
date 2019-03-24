@@ -1,38 +1,48 @@
-import { mutations } from './article.mutations'
 import { actions } from './article.actions'
-import { getters } from './article.getters'
+import { articleGetters } from './article.getters'
 import { Article } from '@/models/article.model'
 import { ArticleQuery } from '@/models/article-query.model'
+import { make } from 'vuex-pathify'
 
 export interface ArticleState {
   userArticles: Article[]
-  globalArticles: Article[]
   userArticlesCount: number
+  globalArticles: Article[]
   globalArticlesCount: number
+  favoriteArticles: []
+  favoriteArticlesCount: number
   errors: any[]
   isLoading: boolean
   articleQuery: ArticleQuery
   tags: string[]
 }
 
-const initialState: ArticleState = {
+export const initialArticleState: ArticleState = {
   userArticles: [],
+  userArticlesCount: 0,
   globalArticles: [],
+  globalArticlesCount: 0,
+  favoriteArticles: [],
+  favoriteArticlesCount: 0,
   errors: [],
   isLoading: false,
-  userArticlesCount: 0,
-  globalArticlesCount: 0,
   articleQuery: {
     offset: 0,
     limit: 10,
-    tags: []
+    tags: [],
+    author: '',
+    favorited: ''
   },
   tags: []
 }
 
+const autoMutations = make.mutations(initialArticleState)
+const autoGetters = make.getters(initialArticleState)
+
 export const article = {
-  state: initialState,
-  mutations,
+  namespaced: true,
+  state: initialArticleState,
+  mutations: { ...autoMutations },
   actions,
-  getters
+  getters: { ...autoGetters, ...articleGetters }
 }

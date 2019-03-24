@@ -6,6 +6,10 @@ export const pageUtil = {
     visiblePages: number,
     currentPage: number
   ) {
+    // if (totalItems < 1) {
+    //   return
+    // }
+
     const totalPages = Math.ceil(totalItems / itemsPerPage)
 
     // change currentPage to last page when currentPage are greater than totalPages

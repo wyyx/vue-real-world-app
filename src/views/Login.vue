@@ -11,7 +11,7 @@
           </p>
 
           <ul class="error-messages">
-            <li v-for="error in ERRORS" :key="error" v-text="error">
+            <li v-for="error in errors" :key="error" v-text="error">
               {{ error }}
               That email or password is invalid
             </li>
@@ -36,9 +36,9 @@
             </fieldset>
             <div class="text-center">
               <button @click="login" class="btn btn-lg btn-primary pull-xs">
-                <span v-if="IS_LOGGING"
-                  ><font-awesome-icon class="fa-spin" icon="spinner"
-                /></span>
+                <span v-if="isLogging">
+                  <font-awesome-icon class="fa-spin" icon="spinner" />
+                </span>
                 <span v-else> Sign in</span>
               </button>
             </div>
@@ -52,9 +52,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
-import { ERRORS, IS_LOGGING } from '@/store/auth/auth.getters'
-import { LOGIN_ACTION } from '@/store/auth/auth.actions'
-import { CLEAR_ERROR } from '@/store/auth/auth.mutations'
+import { get } from 'vuex-pathify'
+import { errors, isLogging, authModulePath } from '@/store/auth/auth.paths'
+import { loginAction } from '@/store/auth/auth.actions'
+import { getGlobalPath } from '@/store'
 
 export default Vue.extend({
   data: function() {
@@ -64,14 +65,14 @@ export default Vue.extend({
     }
   },
   computed: {
-    ...mapGetters({
-      ERRORS,
-      IS_LOGGING
+    ...get(authModulePath, {
+      errors,
+      isLogging
     })
   },
   methods: {
     login() {
-      this.$store.dispatch(LOGIN_ACTION, {
+      this.$store.dispatch(getGlobalPath(authModulePath, loginAction), {
         email: this.email,
         password: this.password
       })

@@ -38,9 +38,9 @@
         <a class="page-link" href="#">Last</a>
       </li>
       <li class="page-item bootstrap">
-        <div class="dropdown default">
+        <div class="dropdown ">
           <button
-            class="btn btn-outline-secondary dropdown-toggle page-link "
+            class="btn btn-outline-secondary dropdown-toggle page-link"
             type="button"
             id="dropdownMenuButton"
             data-toggle="dropdown"
@@ -90,9 +90,9 @@ export default Vue.extend({
   data() {
     return {
       showMenuFlag: false,
-      visiblePagesLocal: 0,
-      currentPageLocal: 0,
-      itemsPerPageLocal: 0,
+      visiblePagesLocal: 5,
+      currentPageLocal: 1,
+      itemsPerPageLocal: 10,
       showFirstAndLastNavigatorLocal: true,
       pages: []
     }
@@ -102,6 +102,7 @@ export default Vue.extend({
     this.currentPageLocal = this.currentPage
     this.itemsPerPageLocal = this.itemsPerPage
     this.showFirstAndLastNavigatorLocal = this.showFirstAndLastNavigator
+    this.updatePage()
   },
   props: {
     totalItems: {
@@ -129,6 +130,11 @@ export default Vue.extend({
       default: true
     }
   },
+  watch: {
+    totalItems(newVal, oldVal) {
+      this.updatePage()
+    }
+  },
   computed: {
     totalPages() {
       return Math.ceil(
@@ -142,29 +148,12 @@ export default Vue.extend({
       return (this as any).currentPageLocal === this.totalPages
     }
   },
-  watch: {
-    totalItems() {
-      this.updatePage()
-    },
-    itemsPerPageLocal() {
-      this.updatePage()
-    },
-    visiblePagesLocal() {
-      this.updatePage()
-    },
-    currentPageLocal() {
-      this.updatePage()
-    }
-  },
   methods: {
     updatePage() {
-      const totalPages = Math.ceil(
-        (this as any).totalItems / (this as any).itemsPerPageLocal
-      )
-
-      // update currentPageLocal to last page when currentPageLocal are greater than totalPages
-      if ((this as any).currentPageLocal > totalPages) {
-        ;(this as any).currentPageLocal = totalPages
+      // change currentPage to last page when currentPage are greater than totalPages
+      const totalPages = Math.ceil(this.totalItems / this.itemsPerPageLocal)
+      if (this.currentPageLocal > totalPages) {
+        this.currentPageLocal = 1
       }
 
       this.pages = pageUtil.getPages(
@@ -181,6 +170,7 @@ export default Vue.extend({
     updateItemsPerPage(num) {
       this.itemsPerPageLocal = num
       this.currentPageLocal = 1
+      this.updatePage()
     },
     goTo(page) {
       this.currentPageLocal = page
@@ -207,7 +197,6 @@ export default Vue.extend({
     },
     closeMenu() {
       this.showMenuFlag = false
-      this.updatePage()
     }
   }
 })
@@ -218,18 +207,16 @@ export default Vue.extend({
   border-color: #ddd !important;
 }
 
-.dropdown {
-  display: inline-block;
-}
-
 .dropdown-toggle {
   border-top-left-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
-  line-height: 1.5 !important;
 }
 
 .pages {
+  display: flex !important;
+  flex-wrap: wrap;
   margin: 0px;
   padding: 0px;
+  list-style: none;
 }
 </style>

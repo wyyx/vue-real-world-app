@@ -2,7 +2,7 @@
   <div class="home-page">
     <div class="banner">
       <div class="container">
-        <h1 class="logo-font">Mediumly {{ SELECTED_TAGS }}</h1>
+        <h1 class="logo-font">Mediumly</h1>
         <p>A place to share your knowledge.</p>
       </div>
     </div>
@@ -33,23 +33,22 @@
           <Feed :feedType="currentFeed"></Feed>
         </div>
         <div class="col-12 col-sm-12 order-1 order-md-12 col-md-3">
-          <div class="sidebar">
-            <p>Popular Tags</p>
-            <div class="tag-list">
-              <a
-                v-for="tag in TAGS"
-                :key="tag"
-                class="tag-pill tag-default"
-                :class="{
-                  active: activeTag(tag),
-                  'shadow-sm': activeTag(tag)
-                }"
-                href="#"
-                @click="toggleTag(tag)"
-              >
-                {{ tag }}
-              </a>
-            </div>
+          <div class="tags-wrapper p-10">
+            <TagWall
+              ref="popularTags"
+              :tags="tags"
+              title="Popular Tags"
+              @tags="onPopularTagsChange($event)"
+            ></TagWall>
+          </div>
+          <div class="tags-wrapper p-10">
+            <TagWall
+              :multiSelect="false"
+              ref="authorTags"
+              :tags="authors('global')"
+              title="Author Tags"
+              @tags="onAuthorTagsChange($event)"
+            ></TagWall>
           </div>
         </div>
       </div>
@@ -60,69 +59,61 @@
 <script lang="ts">
 import Vue from 'vue'
 import Feed from '@/components/Feed.vue'
-import { FETCH_TAGS_ACTION } from '@/store/article/article.actions'
-import { mapGetters } from 'vuex'
+import TagWall from '@/components/TagWall.vue'
 import {
-  TAGS,
-  SELECTED_TAGS,
-  ARTICLE_QUERY
-} from '@/store/article/article.getters'
-import { IS_AUTHENTICATED } from '@/store/auth/auth.getters'
-import { UPDATE_ARTICLE_QUERY } from '@/store/article/article.mutations'
+  queryAuthor,
+  tags,
+  articleQuery,
+  queryTags,
+  authors,
+  articleModulePath
+} from '@/store/article/article.paths'
+import { isAuthenticated, authModulePath } from '@/store/auth/auth.paths'
+import { mapGetters } from 'vuex'
+import { get } from 'vuex-pathify'
+import { fetchTagsAction } from '@/store/article/article.actions'
+import { getGlobalPath } from '@/store'
 
 export default Vue.extend({
   data: function() {
     return {
-      tags: [],
       currentFeed: 'global'
     }
   },
   computed: {
-    ...mapGetters({
-      TAGS,
-      IS_AUTHENTICATED,
-      SELECTED_TAGS,
-      ARTICLE_QUERY
+    ...get(authModulePath, {
+      isAuthenticated
     }),
-    haveTags() {
-      return (this as any).tags.length > 0
-    }
+    ...get(articleModulePath, {
+      articleQuery,
+      tags,
+      authors
+    })
   },
   components: {
-    Feed
+    Feed,
+    TagWall
   },
   watch: {
-    IS_AUTHENTICATED() {
-      this.$store.dispatch(FETCH_TAGS_ACTION)
-      this.tags = []
-    },
-    ARTICLE_QUERY(newVal, oldVal) {
-      const tags = newVal.tags
-      const tag = tags[0]
-
-      // remove popular tags when non popular tag clicked
-      if (tags.length === 1 && !(this as any).TAGS.includes(tag)) {
-        this.tags = []
-      }
+    isAuthenticated() {
+      this.$store.dispatch(getGlobalPath(articleModulePath, fetchTagsAction))
     }
   },
   created() {
-    this.$store.dispatch(FETCH_TAGS_ACTION)
+    this.$store.dispatch(getGlobalPath(articleModulePath, fetchTagsAction))
   },
   methods: {
-    toggleTag(tag) {
-      if (this.tags.includes(tag)) {
-        this.tags = this.tags.filter(t => t !== tag)
-      } else {
-        this.tags.push(tag)
-      }
-      this.updateTag(this.tags)
+    onPopularTagsChange(tags) {
+      ;(this.$store as any).set(queryTags, tags)
+      ;(this.$store as any).set(queryAuthor, '')
+      // clear tags
+      ;(this.$refs.authorTags as any).clear()
     },
-    updateTag(tags) {
-      this.$store.commit(UPDATE_ARTICLE_QUERY, { tags, offset: 0 })
-    },
-    activeTag(tag) {
-      return this.tags.includes(tag)
+    onAuthorTagsChange(tags) {
+      ;(this.$store as any).set(queryTags, [])
+      ;(this.$store as any).set(queryAuthor, tags[0])
+      // clear tags
+      ;(this.$refs.popularTags as any).clear()
     }
   }
 })
@@ -131,10 +122,5 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .logo-font {
   font-family: 'Quattrocento Sans', sans-serif;
-}
-
-.tag-pill.active {
-  background-color: #5cb85c !important;
-  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.2) !important;
 }
 </style>

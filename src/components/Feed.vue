@@ -1,16 +1,23 @@
 <template>
   <div>
-    <div v-if="isLoading" class="article-preview">Loading articles...</div>
-    <div v-else>
+    <div v-if="isLoading" class="article-preview">
+      Loading articles...
+    </div>
+    <div>
       <div v-if="articles.length === 0" class="article-preview">
         No articles are here... yet.
       </div>
-      <ArticleList
-        :articles="articles"
-        :articlesCount="articlesCount"
-        :itemsPerPage="itemsPerPage"
-        @page="onPageUpdate($event)"
-      ></ArticleList>
+      <ArticleList v-show="!isLoading" :articles="articles"></ArticleList>
+      <div class="pagination-wrapper">
+        <Pagination
+          class="pagination"
+          :totalItems="articlesCount"
+          :currentPage="1"
+          :visiblePages="5"
+          :showFirstAndLastNavigator="true"
+          @page="onPageUpdate($event)"
+        ></Pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -18,21 +25,29 @@
 <script lang="ts">
 import Vue from 'vue'
 import ArticleList from '@/components/ArticleList.vue'
-import { mapGetters } from 'vuex'
+import { get } from 'vuex-pathify'
 import {
-  USER_ARTICLES,
-  USER_ARTICLES_COUNT,
-  IS_LOADING,
-  GLOBAL_ARTICLES,
-  GLOBAL_ARTICLES_COUNT,
-  ARTICLE_QUERY
-} from '@/store/article/article.getters'
-import {
-  FETCH_GLOBAL_ARTICLES_ACTION,
-  FETCH_USER_ARTICLES_ACTION
-} from '@/store/article/article.actions'
-import { Article } from '@/models/article.model'
+  globalArticles,
+  globalArticlesCount,
+  userArticles,
+  userArticlesCount,
+  isLoading,
+  articleQuery,
+  queryLimit,
+  queryOffset,
+  articleModulePath
+} from '@/store/article/article.paths'
+import { getGlobalPath } from '@/store'
+import Pagination from '@/components/Pagination.vue'
+
+import { Article, FeedType } from '@/models/article.model'
 import { Page } from '@/models/page.model'
+import {
+  fetchFavoriteArticlesAction,
+  fetchUserAticlesAction,
+  fetchGlobalArticlesAction,
+  updateArticleQueryAction
+} from '@/store/article/article.actions'
 
 export default Vue.extend({
   name: 'app-feed',
@@ -56,46 +71,92 @@ export default Vue.extend({
     })
   },
   components: {
-    ArticleList
+    ArticleList,
+    Pagination
   },
   computed: {
-    ...mapGetters([
-      USER_ARTICLES,
-      USER_ARTICLES_COUNT,
-      IS_LOADING,
-      GLOBAL_ARTICLES,
-      GLOBAL_ARTICLES_COUNT,
-      ARTICLE_QUERY
-    ]),
-    isLoading() {
-      return this[IS_LOADING]
+    ...get('article', {
+      globalArticles,
+      globalArticlesCount,
+      userArticles,
+      userArticlesCount,
+      isLoading,
+      articleQuery,
+      queryOffset,
+      queryLimit
+    }),
+    isUserFeed() {
+      return this['feedType'] === 'user'
     },
     articles() {
-      return this['feedType'] === 'user'
-        ? this[USER_ARTICLES]
-        : this[GLOBAL_ARTICLES]
+      return this.isUserFeed ? this['userArticles'] : this['globalArticles']
     },
     articlesCount() {
-      return this['feedType'] === 'user'
-        ? this[USER_ARTICLES_COUNT]
-        : this[GLOBAL_ARTICLES_COUNT]
+      return this.isUserFeed
+        ? this['userArticlesCount']
+        : this['globalArticlesCount']
     }
   },
   watch: {
-    [ARTICLE_QUERY](newVal, oldVal) {
+    articleQuery(newVal, oldVal) {
       this.loadArticles(newVal)
     }
   },
   methods: {
     loadArticles(params) {
-      if (this.feedType === 'user') {
-        this.$store.dispatch(FETCH_USER_ARTICLES_ACTION, params)
-      } else {
-        this.$store.dispatch(FETCH_GLOBAL_ARTICLES_ACTION, params)
+      switch (this['feedType']) {
+        case FeedType.User:
+          this.$store.dispatch(
+            getGlobalPath(articleModulePath, fetchUserAticlesAction),
+            params
+          )
+          break
+        case FeedType.Global:
+          this.$store.dispatch(
+            getGlobalPath(articleModulePath, fetchGlobalArticlesAction),
+            params
+          )
+          break
+        case FeedType.Favorite:
+          this.$store.dispatch(
+            getGlobalPath(articleModulePath, fetchFavoriteArticlesAction),
+            params
+          )
+          break
+        default:
+          break
       }
+    },
+    onPageUpdate({ page, pageSize }: Page) {
+      const newOffset = (page - 1) * pageSize
+      const newLimit = pageSize
+
+      this.$store.dispatch(
+        getGlobalPath(articleModulePath, updateArticleQueryAction),
+        {
+          offset: newOffset,
+          limit: newLimit
+        }
+      )
     }
   }
 })
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.host {
+  position: relative;
+}
+
+.pagination {
+  position: fixed;
+  bottom: 10px;
+  margin: 0px !important;
+}
+
+.pagination-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+</style>

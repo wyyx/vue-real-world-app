@@ -3,80 +3,107 @@ import { router } from '@/router/router'
 import { authService } from '@/services/auth.service'
 import { setOrUpdateHeader } from '@/services/http.service'
 import { jwtService } from '@/services/jwt.service'
-import {
-  ADD_ERROR,
-  LOGIN,
-  LOGIN_FAIL,
-  LOGIN_SUCCESS,
-  LOGOUT,
-  REGISTER,
-  REGISTER_FAIL,
-  REGISTER_SUCCESS,
-  UPDATE_USER_FAIL,
-  UPDATE_USER_SUCCESS
-} from './auth.mutations'
+import { isLogging, user, errors, isRegistering } from './auth.paths'
 
-export const LOGIN_ACTION = 'LOGIN_ACTION'
-export const LOGOUT_ACTION = 'LOGOUT_ACTION'
-export const REGISTER_ACTION = 'REGISTER_ACTION'
-export const CHECK_AUTH_ACTION = 'CHECK_AUTH_ACTION'
-export const UPDATE_USER_ACTION = 'UPDATE_USER_ACTION'
+export const loginAction = 'loginAction'
+export const loginSuccessAction = 'loginSuccessAction'
+export const loginFailAction = 'loginFailAction'
+export const logoutAction = 'logoutAction'
+export const registerAction = 'registerAction'
+export const registerSuccessAction = 'registerSuccessAction'
+export const registerFailAction = 'registerFailAction'
+export const checkAuthAction = 'checkAuthAction'
+export const updateUserAction = 'updateUserAction'
+export const updateUserSuccessAction = 'updateUserAction'
+export const updateUserFailAction = 'updateUserAction'
 
-export const actions = {
-  [LOGIN_ACTION](context, credentials) {
-    context.commit(LOGIN)
+export const authActions = {
+  // login
+  [loginAction]({ dispatch, commit }, credentials) {
+    commit(isLogging, true)
+
     authService
       .login(credentials)
       .then(response => {
         jwtService.saveToken(response.data.user.token)
         setOrUpdateHeader()
 
-        context.commit(LOGIN_SUCCESS, response.data.user)
+        dispatch(loginSuccessAction, response.data.user)
       })
       .then(() => router.push({ name: 'home' }))
       .catch(error => {
-        context.commit(LOGIN_FAIL)
+        dispatch(loginFailAction)
       })
+      .finally(() => commit(isLogging, false))
   },
-  [LOGOUT_ACTION](context) {
+  [loginSuccessAction]({ dispatch, commit }, payload) {
+    commit(user, payload)
+    commit(errors, [])
+  },
+  [loginFailAction]({ dispatch, commit }) {
+    commit(errors, ['Email or password is not wrong'])
+  },
+  // logout
+  [logoutAction]({ dispatch, commit }) {
     jwtService.destroyToken()
-    context.commit(LOGOUT)
+    commit(user, null)
   },
-  [REGISTER_ACTION](context, credentials) {
-    context.commit(REGISTER)
+  // register
+  [registerAction]({ dispatch, commit }, credentials) {
+    commit(isRegistering, true)
     authService
       .register(credentials)
       .then(({ data }) => {
-        context.commit(REGISTER_SUCCESS, data.user)
+        dispatch(registerSuccessAction, data.user)
       })
       .then(() => router.push({ name: 'home' }))
       .catch(({ response }) => {
-        context.commit(REGISTER_FAIL)
+        dispatch(registerFailAction)
       })
+      .finally(() => commit(isRegistering, false))
   },
-  [CHECK_AUTH_ACTION](context) {
+  [registerSuccessAction]({ dispatch, commit }, credentials) {
+    commit(isRegistering, true)
+    authService
+      .register(credentials)
+      .then(({ data }) => {
+        dispatch(registerSuccessAction, data.user)
+      })
+      .then(() => router.push({ name: 'home' }))
+      .catch(({ response }) => {
+        dispatch(registerFailAction)
+      })
+      .finally(() => commit(isRegistering, false))
+  },
+  [registerFailAction]({ dispatch, commit }) {
+    commit(errors, ['Email has been taken'])
+  },
+  // check auth
+  [checkAuthAction]({ dispatch, commit }) {
     if (jwtService.getToken()) {
       authService
         .checkAuth()
         .then(({ data }) => {
-          context.commit(LOGIN_SUCCESS, data.user)
+          dispatch(loginSuccessAction, data.user)
         })
         .catch(({ response }) => {
-          context.commit(ADD_ERROR, response.data.errors)
+          dispatch(loginFailAction)
         })
     } else {
-      context.commit(LOGOUT)
+      dispatch(logoutAction)
     }
   },
-  [UPDATE_USER_ACTION](context, user: User) {
+  // update user
+  [updateUserAction]({ dispatch, commit }, user: User) {
     authService
       .updateUser(user)
       .then(({ data }) => {
-        context.commit(UPDATE_USER_SUCCESS, data.user)
-        return data
+        dispatch(updateUserSuccessAction, data.user)
       })
       .catch(err => {
-        context.commit(UPDATE_USER_FAIL)
+        dispatch(updateUserFailAction)
       })
-  }
+  },
+  [updateUserSuccessAction]({ dispatch, commit }, user: User) {},
+  [updateUserFailAction]({ dispatch, commit }) {}
 }

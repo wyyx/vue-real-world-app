@@ -9,21 +9,22 @@
             Home
           </router-link>
         </li>
-        <li v-if="IS_AUTHENTICATED" class="nav-item">
+        <li v-if="isAuthenticated" class="nav-item">
           <router-link
             :to="{ name: 'article-create' }"
             class="nav-link px-20"
             href=""
           >
-            <i class="ion-compose"></i>New Post
+            <i class="ion-compose"></i>New Article
           </router-link>
         </li>
-        <li v-if="IS_AUTHENTICATED" class="nav-item">
+        <li v-if="isAuthenticated" class="nav-item">
           <router-link class="nav-link px-20" :to="{ name: 'settings' }">
-            <i class="ion-gear-a"></i>Settings
+            <font-awesome-icon icon="cog" />
+            <span class="pl-1">Settings</span>
           </router-link>
         </li>
-        <template v-if="!IS_AUTHENTICATED">
+        <template v-if="!isAuthenticated">
           <li class="nav-item">
             <router-link class="nav-link px-20" :to="{ name: 'login' }">
               Sign in
@@ -35,17 +36,20 @@
             </router-link>
           </li>
         </template>
-        <li v-if="IS_AUTHENTICATED" class="nav-item clickable" @click="logout">
-          <a class="nav-link px-20"> <i class="ion-gear-a"></i>Logout </a>
+        <li v-if="isAuthenticated" class="nav-item clickable" @click="logout">
+          <a class="nav-link px-20">
+            <font-awesome-icon icon="sign-out-alt" />
+            <span class="pl-1">Logout</span></a
+          >
         </li>
-        <li v-if="IS_AUTHENTICATED" class="nav-item clickable">
+        <li v-if="isAuthenticated" class="nav-item clickable">
           <router-link
             class="nav-link px-20"
             :to="{
               name: 'profile',
-              params: { username: USER_NAME }
+              params: { username }
             }"
-            >[{{ USER_NAME }}]</router-link
+            >[{{ username }}]</router-link
           >
         </li>
       </ul>
@@ -55,30 +59,31 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
+import { resetStore, getGlobalPath } from '@/store'
+import { get } from 'vuex-pathify'
 import {
-  CURRENT_USER,
-  IS_AUTHENTICATED,
-  USER_NAME
-} from '@/store/auth/auth.getters'
-import { LOGOUT_ACTION } from '@/store/auth/auth.actions'
-import { RESET_STORE } from '@/store'
+  user,
+  isAuthenticated,
+  username,
+  authModulePath
+} from '@/store/auth/auth.paths'
+import { logoutAction } from '@/store/auth/auth.actions'
 
 export default Vue.extend({
   data: function() {
     return {}
   },
   computed: {
-    ...mapGetters({
-      CURRENT_USER,
-      IS_AUTHENTICATED,
-      USER_NAME
+    ...get(authModulePath, {
+      user,
+      isAuthenticated,
+      username
     })
   },
   methods: {
     logout() {
-      this.$store.dispatch(LOGOUT_ACTION)
-      this.$store.commit(RESET_STORE)
+      this.$store.dispatch(getGlobalPath(authModulePath, logoutAction))
+      this.$store.commit(resetStore)
     }
   }
 })

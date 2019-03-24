@@ -1,53 +1,150 @@
 import { articleService } from '@/services/article.service'
-import {
-  FETCH_USER_ARTICLES_SUCCESS,
-  FETCH_USER_ARTICLES_FAIL,
-  FETCH_GLOBAL_ARTICLES_SUCCESS,
-  FETCH_GLOBAL_ARTICLES_FAIL,
-  FETCH_TAGS_SUCCESS,
-  FETCH_TAGS_FAIL
-} from './article.mutations'
 import { tagService } from '@/services/tag.service'
+import { Article } from '@/models/article.model'
+import {
+  isLoading,
+  globalArticles,
+  globalArticlesCount,
+  userArticles,
+  userArticlesCount,
+  favoriteArticles,
+  favoriteArticlesCount,
+  articleQuery,
+  tags
+} from './article.paths'
 
-export const FETCH_GLOBAL_ARTICLES_ACTION = 'FETCH_GLOBAL_ARTICLES_ACTION'
-export const FETCH_USER_ARTICLES_ACTION = 'FETCH_USER_ARTICLES_ACTION'
-export const FETCH_TAGS_ACTION = 'FETCH_TAGS_ACTION'
+// fetch global articles
+export const fetchGlobalArticlesAction = 'fetchGlobalArticlesAction'
+export const fetchGlobalArticlesSuccessAction =
+  'fetchGlobalArticlesSuccessAction'
+export const fetchGlobalArticlesFailAction = 'fetchGlobalArticlesFailAction'
+// fetch user articles
+export const fetchUserAticlesAction = 'fetchUserArticlesAction'
+export const fetchUserAticlesSuccessAction = 'fetchUserArticlesSuccessAction'
+export const fetchUserAticlesFailAction = 'fetchUserArticlesFailAction'
+// fetch favorite articles
+export const fetchFavoriteArticlesAction = 'fetchFavoriteArticlesAction'
+export const fetchFavoriteArticlesSuccessAction =
+  'fetchFavoriteArticlesSuccessAction'
+export const fetchFavoriteArticlesFailAction = 'fetchFavoriteArticlesFailAction'
+// fetch tags
+export const fetchTagsAction = 'fetchTagsAction'
+export const fetchTagsSuccessAction = 'fetchTagsSuccessAction'
+export const fetchTagsFailAction = 'fetchTagsFailAction'
+// update article query
+export const updateArticleQueryAction = 'updateArticleQueryAction'
+// create article
+export const createArticleAction = 'createArticleAction'
+export const createArticleSuccessAction = 'createArticleSuccessAction'
+export const createArticleFailAction = 'createArticleFailAction'
 
 export const actions = {
-  [FETCH_USER_ARTICLES_ACTION]({ commit }, params) {
-    articleService
-      .getUserArticles(params)
-      .then(response => {
-        commit(FETCH_USER_ARTICLES_SUCCESS, {
-          articles: response.data.articles,
-          articlesCount: response.data.articlesCount
-        })
-      })
-      .catch(error => {
-        commit(FETCH_USER_ARTICLES_FAIL)
-      })
-  },
-  [FETCH_GLOBAL_ARTICLES_ACTION]({ commit }, params) {
+  // fetch global articles
+  [fetchGlobalArticlesAction]({ dispatch, commit }, params) {
+    commit(isLoading, true)
+
     articleService
       .getGlobalArticles(params)
       .then(response => {
-        commit(FETCH_GLOBAL_ARTICLES_SUCCESS, {
+        dispatch(fetchGlobalArticlesSuccessAction, {
           articles: response.data.articles,
           articlesCount: response.data.articlesCount
         })
       })
       .catch(error => {
-        commit(FETCH_GLOBAL_ARTICLES_FAIL)
+        dispatch(fetchGlobalArticlesFailAction)
       })
+      .finally(() => commit(isLoading, false))
   },
-  [FETCH_TAGS_ACTION]({ commit }, params) {
+  [fetchGlobalArticlesSuccessAction](
+    { dispatch, commit },
+    { articles, articlesCount }
+  ) {
+    commit(globalArticles, articles)
+    commit(globalArticlesCount, articlesCount)
+  },
+
+  [fetchGlobalArticlesFailAction]({ dispatch, commit }) {},
+  // fetch user articles
+  [fetchUserAticlesAction]({ dispatch, commit }, params) {
+    commit(isLoading, true)
+
+    articleService
+      .getUserArticles(params)
+      .then(response => {
+        dispatch(fetchUserAticlesSuccessAction, {
+          articles: response.data.articles,
+          articlesCount: response.data.articlesCount
+        })
+      })
+      .catch(error => {
+        dispatch(fetchUserAticlesFailAction)
+      })
+      .finally(() => commit(isLoading, false))
+  },
+  [fetchUserAticlesSuccessAction](
+    { dispatch, commit },
+    { articles, articlesCount }
+  ) {
+    commit(userArticles, articles)
+    commit(userArticlesCount, articlesCount)
+  },
+  [fetchUserAticlesFailAction]({ commit }) {},
+  // fetch favorite articles
+  [fetchFavoriteArticlesAction]({ dispatch, commit }, params) {
+    commit(isLoading, true)
+
+    articleService
+      .getFavoriteArticles(params)
+      .then(response => {
+        dispatch(fetchFavoriteArticlesSuccessAction, {
+          articles: response.data.articles,
+          articlesCount: response.data.articlesCount
+        })
+      })
+      .catch(error => {
+        dispatch(fetchFavoriteArticlesFailAction)
+      })
+      .finally(() => commit(isLoading, false))
+  },
+  [fetchFavoriteArticlesSuccessAction](
+    { dispatch, commit },
+    { articles, articlesCount }
+  ) {
+    commit(favoriteArticles, articles)
+    commit(favoriteArticlesCount, articlesCount)
+  },
+  [fetchFavoriteArticlesFailAction]({ commit }) {},
+  // fetch tags
+  [fetchTagsAction]({ dispatch }) {
     tagService
       .get()
       .then(response => {
-        commit(FETCH_TAGS_SUCCESS, response.data.tags)
+        dispatch(fetchTagsSuccessAction, response.data.tags)
       })
       .catch(error => {
-        commit(FETCH_TAGS_FAIL)
+        dispatch(fetchTagsFailAction)
       })
-  }
+  },
+  [fetchTagsSuccessAction]({ dispatch, commit }, payload) {
+    commit(tags, payload)
+  },
+  [fetchTagsFailAction]({ dispatch }) {},
+  [updateArticleQueryAction]({ dispatch, commit, getters }, payload) {
+    commit(articleQuery, { ...getters[articleQuery], ...payload })
+  },
+  // create article
+  [createArticleAction]({ dispatch }, article: Article) {
+    console.log('article', article)
+    articleService
+      .create(article)
+      .then(response => {
+        dispatch(createArticleSuccessAction, response.data.article)
+      })
+      .catch(error => {
+        dispatch(createArticleFailAction)
+      })
+  },
+  [createArticleSuccessAction]({ dispatch, commit }, payload) {},
+  [createArticleFailAction]({ dispatch }) {}
 }

@@ -9,11 +9,35 @@ export const articleService = {
     params.tags.forEach(tag => searchParams.append('tag', tag))
 
     // append others
-    const others = { ...params, tag: params.tags }
+    const others = { ...params }
     delete others.tags
     for (const key in others) {
       if (others.hasOwnProperty(key)) {
-        searchParams.append(key, others[key])
+        // append avaliable params exclude 0 (offset: 0)
+        if (others[key] || others[key] === 0) {
+          searchParams.append(key, others[key])
+        }
+      }
+    }
+
+    return http.get('articles', {
+      params: searchParams
+    })
+  },
+  getFavoriteArticles(params: ArticleQuery) {
+    // append tags
+    const searchParams = new URLSearchParams()
+    params.tags.forEach(tag => searchParams.append('tag', tag))
+
+    // append others
+    const others = { ...params }
+    delete others.tags
+    for (const key in others) {
+      if (others.hasOwnProperty(key)) {
+        // append avaliable params exclude 0 (offset: 0)
+        if (others[key] || others[key] === 0) {
+          searchParams.append(key, others[key])
+        }
       }
     }
 

@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { UPDATE_QUERY_TAGS } from '@/store/article/article.mutations'
+import { queryTags } from '@/store/article/article.paths'
 
 export default Vue.extend({
   name: 'TagList',
@@ -22,7 +22,7 @@ export default Vue.extend({
   },
   methods: {
     updateArticleQuery(tag) {
-      this.$store.commit(UPDATE_QUERY_TAGS, [tag])
+      this.$store.commit(queryTags, [tag])
     }
   }
 })

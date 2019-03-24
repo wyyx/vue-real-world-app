@@ -1,29 +1,30 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import pathify from './pathify'
 import { auth } from './auth/auth.module'
 import { profile } from './profile/profile.module'
 import { article } from './article/article.module'
-import { cloneDeep } from 'lodash'
 
 Vue.use(Vuex)
 
-export const RESET_STORE = 'reset_store'
+export const resetStore = 'resetStore'
 
 export default new Vuex.Store({
+  plugins: [pathify.plugin],
   modules: {
     auth,
     profile,
     article
   },
   mutations: {
-    [RESET_STORE](state: any) {
+    [resetStore](state: any) {
       const initialState = JSON.parse(localStorage.getItem('initialState'))
-
-      // console.log('initialState', JSON.stringify(initialState))
-      // console.log('before', JSON.stringify(state))
       Object.assign(state, initialState)
-      // console.log('after', JSON.stringify(state))
-      // console.log('after obj', state)
     }
   }
 })
+
+// get global path
+export function getGlobalPath(modulePath: string, localPath: string) {
+  return modulePath + localPath
+}
