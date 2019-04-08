@@ -157,10 +157,10 @@ export default Vue.extend({
       }
 
       this.pages = pageUtil.getPages(
-        (this as any).totalItems,
-        (this as any).itemsPerPageLocal,
-        (this as any).visiblePagesLocal,
-        (this as any).currentPageLocal
+        this.totalItems,
+        this.itemsPerPageLocal,
+        this.visiblePagesLocal,
+        this.currentPageLocal
       )
       this.$emit('page', {
         page: this.currentPageLocal,

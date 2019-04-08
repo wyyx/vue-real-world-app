@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import pathify from './pathify'
 import { auth } from './auth/auth.module'
-import { profile } from './profile/profile.module'
+import { common } from './common/common.module'
 import { article } from './article/article.module'
 
 Vue.use(Vuex)
@@ -13,7 +13,7 @@ export default new Vuex.Store({
   plugins: [pathify.plugin],
   modules: {
     auth,
-    profile,
+    common,
     article
   },
   mutations: {

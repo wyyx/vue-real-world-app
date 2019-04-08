@@ -38,6 +38,7 @@ export const router = new Router({
     },
     {
       path: '/@:username',
+      props: true,
       component: () => import('@/views/Profile.vue'),
       children: [
         {

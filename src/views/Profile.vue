@@ -4,8 +4,8 @@
       <div class="container">
         <div class="row">
           <div class="col-xs-12 col-md-10 offset-md-1">
-            <img src="http://i.imgur.com/Qr71crq.jpg" class="user-img" />
-            <h4>Eric Simons</h4>
+            <img :src="profile.image" class="user-img" />
+            <h4>{{ profile.username }}</h4>
             <p>
               Cofounder @GoThinkster, lived in Aol's HQ for a few months, kinda
               looks like Peeta from the Hunger Games
@@ -80,3 +80,30 @@
     </div>
   </div>
 </template>
+<script lang="ts">
+import Vue from 'vue'
+import { get } from 'vuex-pathify'
+import { commonModulePath } from '../store/common/common.paths'
+import { profile } from '@/store/common/common.paths'
+import { getGlobalPath } from '../store'
+import { fetchProfileAction } from '../store/common/common.actions'
+
+export default Vue.extend({
+  props: {
+    username: {
+      type: String
+    }
+  },
+  computed: {
+    ...get(commonModulePath, {
+      profile
+    })
+  },
+  created() {
+    this.$store.dispatch(
+      getGlobalPath(commonModulePath, fetchProfileAction),
+      this.username
+    )
+  }
+})
+</script>
