@@ -30,8 +30,47 @@
               </li>
             </ul>
           </div>
-          <Feed :feedType="currentFeed"></Feed>
+          <!-- feed -->
+          <div>
+            <div v-if="isLoading" class="article-preview">
+              Loading articles...
+            </div>
+            <div>
+              <div
+                v-if="!isLoading && articles.length === 0"
+                class="article-preview"
+              >
+                No articles are here... yet.
+              </div>
+              <ArticleList
+                v-show="!isLoading"
+                :articles="articles"
+              ></ArticleList>
+              <div class="pagination-wrapper">
+                <Pagination
+                  class="pagination"
+                  :totalItems="articlesCount"
+                  :currentPage="1"
+                  :visiblePages="5"
+                  :showFirstAndLastNavigator="true"
+                  @page="onPageUpdate($event)"
+                ></Pagination>
+              </div>
+            </div>
+          </div>
+          <!-- pagination -->
+          <div class="pagination-wrapper">
+            <Pagination
+              class="pagination"
+              :totalItems="articlesCount"
+              :currentPage="1"
+              :visiblePages="5"
+              :showFirstAndLastNavigator="true"
+              @page="onPageUpdate($event)"
+            ></Pagination>
+          </div>
         </div>
+        <!-- tag wall -->
         <div class="col-12 col-sm-12 order-1 order-md-12 col-md-3">
           <div class="tags-wrapper p-10">
             <TagWall
@@ -50,6 +89,15 @@
               @tags="onAuthorTagsChange($event)"
             ></TagWall>
           </div>
+          <div class="tags-wrapper p-10" v-show="currentTags.length > 0">
+            <TagWall
+              :multiSelect="false"
+              ref="currentTags"
+              :tags="currentTags"
+              title="Current Tags"
+              @tags="onCurrentTagsChange($event)"
+            ></TagWall>
+          </div>
         </div>
       </div>
     </div>
@@ -60,21 +108,43 @@
 import Vue from 'vue'
 import Feed from '@/components/Feed.vue'
 import TagWall from '@/components/TagWall.vue'
+import ArticleList from '@/components/ArticleList.vue'
+import Pagination from '@/components/Pagination.vue'
 import {
-  queryAuthor,
+  articleQueryAuthor,
   tags,
   articleQuery,
-  queryTags,
+  articleQueryTags,
   authors,
-  articleModulePath
+  articleModulePath,
+  globalArticles,
+  globalArticlesCount,
+  userArticles,
+  userArticlesCount,
+  isLoading,
+  articleQueryLimit,
+  articleQueryOffset,
+  currentTags
 } from '@/store/article/article.paths'
+import {
+  fetchTagsAction,
+  fetchUserArticlesAction,
+  fetchGlobalArticlesAction,
+  updateArticleQueryAction
+} from '@/store/article/article.actions'
 import { isAuthenticated, authModulePath } from '@/store/auth/auth.paths'
 import { mapGetters } from 'vuex'
 import { get } from 'vuex-pathify'
-import { fetchTagsAction } from '@/store/article/article.actions'
 import { getGlobalPath } from '@/store'
+import { FeedType } from '../models/article.model'
+import { Page } from '../models/page.model'
 
 export default Vue.extend({
+  components: {
+    TagWall,
+    ArticleList,
+    Pagination
+  },
   data: function() {
     return {
       currentFeed: 'global'
@@ -87,33 +157,120 @@ export default Vue.extend({
     ...get(articleModulePath, {
       articleQuery,
       tags,
-      authors
-    })
-  },
-  components: {
-    Feed,
-    TagWall
+      authors,
+      globalArticles,
+      globalArticlesCount,
+      userArticles,
+      userArticlesCount,
+      isLoading,
+      articleQueryOffset,
+      articleQueryTags,
+      articleQueryLimit,
+      currentTags
+    }),
+    articles() {
+      switch (this.currentFeed) {
+        case FeedType.User:
+          return (this as any).userArticles
+        case FeedType.Global:
+          return (this as any).globalArticles
+        default:
+          return null
+      }
+    },
+    articlesCount() {
+      switch (this.currentFeed) {
+        case FeedType.User:
+          return (this as any).userArticlesCount
+        case FeedType.Global:
+          return (this as any).globalArticlesCount
+        default:
+          return null
+      }
+    }
   },
   watch: {
     isAuthenticated() {
-      this.$store.dispatch(getGlobalPath(articleModulePath, fetchTagsAction))
+      this.$store.dispatch(articleModulePath + fetchTagsAction)
+    },
+    articleQuery(newVal, oldVal) {
+      this.loadArticles(newVal)
+    },
+    currentTags(newVal: string[], oldVal: string[]) {
+      const currentTagsRef: any = this.$refs.currentTags
+      if (newVal.length > 0) {
+        this.clearPopularTags()
+        this.clearAuthorTags()
+        currentTagsRef.setSelectedTags(newVal)
+      }
     }
   },
   created() {
-    this.$store.dispatch(getGlobalPath(articleModulePath, fetchTagsAction))
+    this.$store.dispatch(articleModulePath + fetchTagsAction)
   },
   methods: {
     onPopularTagsChange(tags) {
-      ;(this.$store as any).set(queryTags, tags)
-      ;(this.$store as any).set(queryAuthor, '')
-      // clear tags
-      ;(this.$refs.authorTags as any).clear()
+      const store: any = this.$store
+      store.set(articleModulePath + articleQueryTags, tags)
+      store.set(articleModulePath + articleQueryAuthor, '')
+
+      this.clearAuthorTags()
     },
+
     onAuthorTagsChange(tags) {
-      ;(this.$store as any).set(queryTags, [])
-      ;(this.$store as any).set(queryAuthor, tags[0])
-      // clear tags
-      ;(this.$refs.popularTags as any).clear()
+      const store: any = this.$store
+      store.set(articleModulePath + articleQueryTags, [])
+      store.set(articleModulePath + articleQueryAuthor, tags[0])
+
+      this.clearPopularTags()
+    },
+    onCurrentTagsChange(tags: string[]) {
+      console.log('tags', tags)
+      const store: any = this.$store
+      store.set(articleModulePath + articleQueryTags, tags)
+      store.set(articleModulePath + currentTags, tags)
+
+      this.clearPopularTags()
+      this.clearAuthorTags()
+    },
+    clearPopularTags() {
+      const popularTagsRef: any = this.$refs.popularTags
+      popularTagsRef.clear()
+    },
+    clearAuthorTags() {
+      const authorTagsRef: any = this.$refs.authorTags
+      authorTagsRef.clear()
+    },
+    clearCurrentTags() {
+      const currentTagsRef: any = this.$refs.currentTags
+      currentTagsRef.clear()
+    },
+    loadArticles(params) {
+      switch (this.currentFeed) {
+        case FeedType.User:
+          this.$store.dispatch(
+            articleModulePath + fetchUserArticlesAction,
+            params
+          )
+          break
+        case FeedType.Global:
+          this.$store.dispatch(
+            articleModulePath + fetchGlobalArticlesAction,
+            params
+          )
+          break
+        default:
+          break
+      }
+    },
+    onPageUpdate({ page, pageSize }: Page) {
+      const newOffset = (page - 1) * pageSize
+      const newLimit = pageSize
+
+      this.$store.dispatch(articleModulePath + updateArticleQueryAction, {
+        offset: newOffset,
+        limit: newLimit
+      })
     }
   }
 })
@@ -122,5 +279,21 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .logo-font {
   font-family: 'Quattrocento Sans', sans-serif;
+}
+
+.host {
+  position: relative;
+}
+
+.pagination {
+  position: fixed;
+  bottom: 10px;
+  margin: 0px !important;
+}
+
+.pagination-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 </style>

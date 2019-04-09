@@ -19,9 +19,9 @@ export const fetchGlobalArticlesSuccessAction =
   'fetchGlobalArticlesSuccessAction'
 export const fetchGlobalArticlesFailAction = 'fetchGlobalArticlesFailAction'
 // fetch user articles
-export const fetchUserAticlesAction = 'fetchUserArticlesAction'
-export const fetchUserAticlesSuccessAction = 'fetchUserArticlesSuccessAction'
-export const fetchUserAticlesFailAction = 'fetchUserArticlesFailAction'
+export const fetchUserArticlesAction = 'fetchUserArticlesAction'
+export const fetchUserArticlesSuccessAction = 'fetchUserArticlesSuccessAction'
+export const fetchUserArticlesFailAction = 'fetchUserArticlesFailAction'
 // fetch favorite articles
 export const fetchFavoriteArticlesAction = 'fetchFavoriteArticlesAction'
 export const fetchFavoriteArticlesSuccessAction =
@@ -66,30 +66,30 @@ export const actions = {
 
   [fetchGlobalArticlesFailAction]({ dispatch, commit }) {},
   // fetch user articles
-  [fetchUserAticlesAction]({ dispatch, commit }, params) {
+  [fetchUserArticlesAction]({ dispatch, commit }, params) {
     commit(isLoading, true)
 
     articleService
       .getUserArticles(params)
       .then(response => {
-        dispatch(fetchUserAticlesSuccessAction, {
+        dispatch(fetchUserArticlesSuccessAction, {
           articles: response.data.articles,
           articlesCount: response.data.articlesCount
         })
       })
       .catch(error => {
-        dispatch(fetchUserAticlesFailAction)
+        dispatch(fetchUserArticlesFailAction)
       })
       .finally(() => commit(isLoading, false))
   },
-  [fetchUserAticlesSuccessAction](
+  [fetchUserArticlesSuccessAction](
     { dispatch, commit },
     { articles, articlesCount }
   ) {
     commit(userArticles, articles)
     commit(userArticlesCount, articlesCount)
   },
-  [fetchUserAticlesFailAction]({ commit }) {},
+  [fetchUserArticlesFailAction]({ commit }) {},
   // fetch favorite articles
   [fetchFavoriteArticlesAction]({ dispatch, commit }, params) {
     commit(isLoading, true)

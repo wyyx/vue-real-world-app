@@ -2,3 +2,9 @@
 GET  https://conduit.productionready.io/api/profiles/cheng HTTP/1.1
 Content-Type: application/json
 ###
+
+# follow user
+POST https://conduit.productionready.io/api/profiles/jlennon/follow HTTP/1.1
+Content-Type: application/json
+Authorization: Token eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NTEwMjAsInVzZXJuYW1lIjoiY2hlbmciLCJleHAiOjE1NTkwMDc3NjZ9.5V6-9brhXeYkJAiyjhyp0y8OW3uSJA7xSZD2f31IzHo
+###

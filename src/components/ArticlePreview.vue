@@ -9,17 +9,23 @@
     <div class="row">
       <div class="col-12 col-md-6"></div>
       <div class="col-12 col-md-6 text-right">
-        <TagList :tags="article.tagList" />
+        <TagList :tags="article.tagList" @tags="onTags($event)" />
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import ArticleMeta from './ArticleMeta'
-import TagList from './TagList'
+<script lang="ts">
+import Vue from 'vue'
+import ArticleMeta from './ArticleMeta.vue'
+import TagList from './TagList.vue'
+import {
+  articleModulePath,
+  articleQueryTags,
+  currentTags
+} from '../store/article/article.paths'
 
-export default {
+export default Vue.extend({
   name: 'ArticlePreview',
   components: {
     ArticleMeta,
@@ -30,15 +36,24 @@ export default {
   },
   computed: {
     articleLink() {
+      const vm: any = this
       return {
         name: 'article',
         params: {
-          slug: this.article.slug
+          slug: vm.article.slug
         }
       }
     }
+  },
+  methods: {
+    onTags(tags: string[]) {
+      console.log('tags', tags)
+      const store: any = this.$store
+      store.set(articleModulePath + articleQueryTags, tags)
+      store.set(articleModulePath + currentTags, tags)
+    }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>

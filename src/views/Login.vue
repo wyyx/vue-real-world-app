@@ -60,8 +60,8 @@ import { getGlobalPath } from '@/store'
 export default Vue.extend({
   data: function() {
     return {
-      email: '',
-      password: ''
+      email: 'gnehcyx@163.com',
+      password: '12345678'
     }
   },
   computed: {

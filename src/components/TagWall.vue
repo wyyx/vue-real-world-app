@@ -42,7 +42,17 @@ export default Vue.extend({
     multiSelect: {
       type: Boolean,
       default: true
+    },
+    initSelectedTags: {
+      type: Array,
+      default: function() {
+        return []
+      }
     }
+  },
+  created() {
+    const vm: any = this
+    vm.selectedTags = [...vm.initSelectedTags]
   },
   methods: {
     toggleTag(tag) {
@@ -78,6 +88,9 @@ export default Vue.extend({
     },
     clear() {
       this.selectedTags = []
+    },
+    setSelectedTags(tags: string[]) {
+      this.selectedTags = tags
     }
   }
 })

@@ -24,11 +24,21 @@
         <div class="col-xs-12 col-md-10 offset-md-1">
           <div class="articles-toggle">
             <ul class="nav nav-pills outline-active">
-              <li class="nav-item">
-                <a class="nav-link active" href="">My Articles</a>
+              <li class="nav-item clickable" @click="currentFeed = 'my'">
+                <span
+                  class="nav-link"
+                  :class="{ active: currentFeed === 'my' }"
+                >
+                  My Articles
+                </span>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="">Favorited Articles</a>
+              <li class="nav-item clickable" @click="currentFeed = 'favorite'">
+                <span
+                  class="nav-link"
+                  :class="{ active: currentFeed === 'favorite' }"
+                >
+                  Favorited Articles
+                </span>
               </li>
             </ul>
           </div>
@@ -87,8 +97,14 @@ import { commonModulePath } from '../store/common/common.paths'
 import { profile } from '@/store/common/common.paths'
 import { getGlobalPath } from '../store'
 import { fetchProfileAction } from '../store/common/common.actions'
+import { articleModulePath } from '../store/article/article.paths'
 
 export default Vue.extend({
+  data: function() {
+    return {
+      currentFeed: 'my'
+    }
+  },
   props: {
     username: {
       type: String
@@ -98,6 +114,26 @@ export default Vue.extend({
     ...get(commonModulePath, {
       profile
     })
+  },
+  methods: {
+    // loadArticles(params) {
+    //   switch (this.currentFeed) {
+    //     case FeedType.User:
+    //       this.$store.dispatch(
+    //         articleModulePath + fetchUserArticlesAction,
+    //         params
+    //       )
+    //       break
+    //     case FeedType.Global:
+    //       this.$store.dispatch(
+    //         articleModulePath + fetchGlobalArticlesAction,
+    //         params
+    //       )
+    //       break
+    //     default:
+    //       break
+    //   }
+    // }
   },
   created() {
     this.$store.dispatch(
