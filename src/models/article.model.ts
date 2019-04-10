@@ -3,6 +3,10 @@ export interface ArticlesResponse {
   articlesCount: number
 }
 
+export interface ArticleResponse {
+  article: Article
+}
+
 export interface Article {
   slug?: string
   title: string
@@ -26,5 +30,6 @@ export interface Author {
 export enum FeedType {
   User = 'user',
   Global = 'global',
-  Favorite = 'favorite'
+  Favorite = 'favorite',
+  My = 'my'
 }

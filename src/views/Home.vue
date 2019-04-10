@@ -84,7 +84,7 @@
             <TagWall
               :multiSelect="false"
               ref="authorTags"
-              :tags="authors('global')"
+              :tags="authors"
               title="Author Tags"
               @tags="onAuthorTagsChange($event)"
             ></TagWall>
@@ -117,14 +117,12 @@ import {
   articleQueryTags,
   authors,
   articleModulePath,
-  globalArticles,
-  globalArticlesCount,
-  userArticles,
-  userArticlesCount,
   isLoading,
   articleQueryLimit,
   articleQueryOffset,
-  currentTags
+  currentTags,
+  articles,
+  articlesCount
 } from '@/store/article/article.paths'
 import {
   fetchTagsAction,
@@ -158,37 +156,16 @@ export default Vue.extend({
       articleQuery,
       tags,
       authors,
-      globalArticles,
-      globalArticlesCount,
-      userArticles,
-      userArticlesCount,
+      articles,
+      articlesCount,
       isLoading,
       articleQueryOffset,
       articleQueryTags,
       articleQueryLimit,
       currentTags
-    }),
-    articles() {
-      switch (this.currentFeed) {
-        case FeedType.User:
-          return (this as any).userArticles
-        case FeedType.Global:
-          return (this as any).globalArticles
-        default:
-          return null
-      }
-    },
-    articlesCount() {
-      switch (this.currentFeed) {
-        case FeedType.User:
-          return (this as any).userArticlesCount
-        case FeedType.Global:
-          return (this as any).globalArticlesCount
-        default:
-          return null
-      }
-    }
+    })
   },
+
   watch: {
     isAuthenticated() {
       this.$store.dispatch(articleModulePath + fetchTagsAction)
@@ -203,6 +180,10 @@ export default Vue.extend({
         this.clearAuthorTags()
         currentTagsRef.setSelectedTags(newVal)
       }
+    },
+    currentFeed(newVal, oldVal) {
+      const vm: any = this
+      this.loadArticles(vm.articleQuery)
     }
   },
   created() {

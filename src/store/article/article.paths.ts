@@ -2,12 +2,8 @@
 export const articleModulePath = 'article/'
 
 // paths
-export const userArticles = 'userArticles'
-export const userArticlesCount = 'userArticlesCount'
-export const globalArticles = 'globalArticles'
-export const globalArticlesCount = 'globalArticlesCount'
-export const favoriteArticles = 'favoriteArticles'
-export const favoriteArticlesCount = 'favoriteArticlesCount'
+export const articles = 'articles'
+export const articlesCount = 'articlesCount'
 export const articleQuery = 'articleQuery'
 export const errors = 'errors'
 export const isLoading = 'isLoading'

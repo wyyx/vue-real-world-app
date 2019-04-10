@@ -6,7 +6,6 @@ import '@/assets/main.scss'
 import '@/services/http.service'
 import '@/router/router.guard'
 import VeeValidate, { Validator } from 'vee-validate'
-import zh from 'vee-validate/dist/locale/zh_CN'
 // import filters
 import '@/filters'
 // import fontawesome lib
@@ -14,7 +13,8 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faSpinner,
   faCog,
-  faSignOutAlt
+  faSignOutAlt,
+  faPlus
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
@@ -27,6 +27,7 @@ import 'bootstrap/dist/js/bootstrap.min'
 library.add(faSpinner)
 library.add(faCog)
 library.add(faSignOutAlt)
+library.add(faPlus)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 // save store initial state

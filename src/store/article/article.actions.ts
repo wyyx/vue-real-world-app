@@ -3,14 +3,10 @@ import { tagService } from '@/services/tag.service'
 import { Article } from '@/models/article.model'
 import {
   isLoading,
-  globalArticles,
-  globalArticlesCount,
-  userArticles,
-  userArticlesCount,
-  favoriteArticles,
-  favoriteArticlesCount,
   articleQuery,
-  tags
+  tags,
+  articles,
+  articlesCount
 } from './article.paths'
 
 // fetch global articles
@@ -27,6 +23,10 @@ export const fetchFavoriteArticlesAction = 'fetchFavoriteArticlesAction'
 export const fetchFavoriteArticlesSuccessAction =
   'fetchFavoriteArticlesSuccessAction'
 export const fetchFavoriteArticlesFailAction = 'fetchFavoriteArticlesFailAction'
+// fetch my articles
+export const fetchMyArticlesAction = 'fetchMyArticlesAction'
+export const fetchMyArticlesSuccessAction = 'fetchMyArticlesSuccessAction'
+export const fetchMyArticlesFailAction = 'fetchMyArticlesFailAction'
 // fetch tags
 export const fetchTagsAction = 'fetchTagsAction'
 export const fetchTagsSuccessAction = 'fetchTagsSuccessAction'
@@ -37,6 +37,11 @@ export const updateArticleQueryAction = 'updateArticleQueryAction'
 export const createArticleAction = 'createArticleAction'
 export const createArticleSuccessAction = 'createArticleSuccessAction'
 export const createArticleFailAction = 'createArticleFailAction'
+// favorite article
+export const favoriteArticleAction = 'favoriteArticleAction'
+export const favoriteArticleASuccessction = 'favoriteArticleASuccessction'
+export const unfavoriteArticleAction = 'unfavoriteArticleAction'
+export const unfavoriteArticleSuccessAction = 'unfavoriteArticleSuccessAction'
 
 export const actions = {
   // fetch global articles
@@ -56,12 +61,9 @@ export const actions = {
       })
       .finally(() => commit(isLoading, false))
   },
-  [fetchGlobalArticlesSuccessAction](
-    { dispatch, commit },
-    { articles, articlesCount }
-  ) {
-    commit(globalArticles, articles)
-    commit(globalArticlesCount, articlesCount)
+  [fetchGlobalArticlesSuccessAction]({ dispatch, commit }, payload) {
+    commit(articles, payload.articles)
+    commit(articlesCount, payload.articlesCount)
   },
 
   [fetchGlobalArticlesFailAction]({ dispatch, commit }) {},
@@ -82,12 +84,9 @@ export const actions = {
       })
       .finally(() => commit(isLoading, false))
   },
-  [fetchUserArticlesSuccessAction](
-    { dispatch, commit },
-    { articles, articlesCount }
-  ) {
-    commit(userArticles, articles)
-    commit(userArticlesCount, articlesCount)
+  [fetchUserArticlesSuccessAction]({ dispatch, commit }, payload) {
+    commit(articles, payload.articles)
+    commit(articlesCount, payload.articlesCount)
   },
   [fetchUserArticlesFailAction]({ commit }) {},
   // fetch favorite articles
@@ -107,14 +106,33 @@ export const actions = {
       })
       .finally(() => commit(isLoading, false))
   },
-  [fetchFavoriteArticlesSuccessAction](
-    { dispatch, commit },
-    { articles, articlesCount }
-  ) {
-    commit(favoriteArticles, articles)
-    commit(favoriteArticlesCount, articlesCount)
+  [fetchFavoriteArticlesSuccessAction]({ dispatch, commit }, payload) {
+    commit(articles, payload.articles)
+    commit(articlesCount, payload.articlesCount)
   },
   [fetchFavoriteArticlesFailAction]({ commit }) {},
+  // fetch my articles
+  [fetchMyArticlesAction]({ dispatch, commit }, params) {
+    commit(isLoading, true)
+
+    articleService
+      .getMyArticles(params)
+      .then(response => {
+        dispatch(fetchMyArticlesSuccessAction, {
+          articles: response.data.articles,
+          articlesCount: response.data.articlesCount
+        })
+      })
+      .catch(error => {
+        dispatch(fetchMyArticlesFailAction)
+      })
+      .finally(() => commit(isLoading, false))
+  },
+  [fetchMyArticlesSuccessAction]({ dispatch, commit }, payload) {
+    commit(articles, payload.articles)
+    commit(articlesCount, payload.articlesCount)
+  },
+  [fetchMyArticlesFailAction]({ commit }) {},
   // fetch tags
   [fetchTagsAction]({ dispatch }) {
     tagService
@@ -135,7 +153,6 @@ export const actions = {
   },
   // create article
   [createArticleAction]({ dispatch }, article: Article) {
-    console.log('article', article)
     articleService
       .create(article)
       .then(response => {
@@ -146,5 +163,45 @@ export const actions = {
       })
   },
   [createArticleSuccessAction]({ dispatch, commit }, payload) {},
-  [createArticleFailAction]({ dispatch }) {}
+  [createArticleFailAction]({ dispatch }) {},
+  // favorite article
+  [favoriteArticleAction]({ dispatch }, slug: string) {
+    articleService
+      .favoriteArticle(slug)
+      .then(response => {
+        dispatch(favoriteArticleASuccessction, response.data.article)
+      })
+      .catch(error => {})
+  },
+  [favoriteArticleASuccessction]({ commit, getters }, article: Article) {
+    const articleList: Article[] = getters[articles]
+    const index = articleList.findIndex(a => a.slug === article.slug)
+
+    if (index > -1) {
+      // replacing with updated article
+      articleList.splice(index, 1, article)
+    }
+
+    commit(articles, [...articleList])
+  },
+  // unfavorite article
+  [unfavoriteArticleAction]({ dispatch }, slug: string) {
+    articleService
+      .unfavoriteArticle(slug)
+      .then(response => {
+        dispatch(unfavoriteArticleSuccessAction, response.data.article)
+      })
+      .catch(error => {})
+  },
+  [unfavoriteArticleSuccessAction]({ commit, getters }, article: Article) {
+    const articleList: Article[] = getters[articles]
+    const index = articleList.findIndex(a => a.slug === article.slug)
+
+    if (index > -1) {
+      // replacing with updated article
+      articleList.splice(index, 1, article)
+    }
+
+    commit(articles, [...articleList])
+  }
 }

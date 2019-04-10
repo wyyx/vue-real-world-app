@@ -45,7 +45,7 @@ Authorization: Token eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NTEwMjAsInVzZX
 ###
 
 # get favorited articles
-GET  https://conduit.productionready.io/api/articles?offset=0&limit=5&favorited=jake HTTP/1.1
+GET  https://conduit.productionready.io/api/articles?favorited=cheng HTTP/1.1
 ###
 
 

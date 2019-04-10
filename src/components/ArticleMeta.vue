@@ -24,7 +24,7 @@
       <button
         class="btn btn-sm pull-xs-right"
         v-if="!actions"
-        v-on:click="toggleFavorite"
+        @click="toggleFavorite"
         :class="{
           'btn-primary': article.favorited,
           'btn-outline-primary': !article.favorited
@@ -37,10 +37,17 @@
   </div>
 </template>
 
-<script>
-import { mapGetters } from 'vuex'
+<script lang="ts">
+import Vue from 'vue'
+import { get } from 'vuex-pathify'
+import { authModulePath, user, isAuthenticated } from '../store/auth/auth.paths'
+import {
+  unfavoriteArticleAction,
+  favoriteArticleAction
+} from '../store/article/article.actions'
+import { articleModulePath } from '../store/article/article.paths'
 
-export default {
+export default Vue.extend({
   name: 'ArticleMeta',
   components: {},
   props: {
@@ -55,23 +62,33 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentUser', 'isAuthenticated'])
+    ...get(authModulePath, {
+      user,
+      isAuthenticated
+    })
   },
   methods: {
     isCurrentUser() {
-      if (this.currentUser.username && this.article.author.username) {
-        return this.currentUser.username === this.article.author.username
+      const vm: any = this
+      if (vm.user && vm.user.username) {
+        return vm.user.username === this.article.author.username
       }
       return false
     },
     toggleFavorite() {
-      if (!this.isAuthenticated) {
+      const vm: any = this
+
+      if (!vm.isAuthenticated) {
         this.$router.push({ name: 'login' })
         return
       }
-      const action = this.article.favorited ? FAVORITE_REMOVE : FAVORITE_ADD
+
+      const action = this.article.favorited
+        ? articleModulePath + unfavoriteArticleAction
+        : articleModulePath + favoriteArticleAction
       this.$store.dispatch(action, this.article.slug)
     }
-  }
-}
+  },
+  created() {}
+})
 </script>

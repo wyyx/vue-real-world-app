@@ -5,12 +5,8 @@ import { ArticleQuery } from '@/models/article-query.model'
 import { make } from 'vuex-pathify'
 
 export interface ArticleState {
-  userArticles: Article[]
-  userArticlesCount: number
-  globalArticles: Article[]
-  globalArticlesCount: number
-  favoriteArticles: []
-  favoriteArticlesCount: number
+  articles: Article[]
+  articlesCount: 0
   errors: any[]
   isLoading: boolean
   articleQuery: ArticleQuery
@@ -19,20 +15,15 @@ export interface ArticleState {
 }
 
 export const initialArticleState: ArticleState = {
-  userArticles: [],
-  userArticlesCount: 0,
-  globalArticles: [],
-  globalArticlesCount: 0,
-  favoriteArticles: [],
-  favoriteArticlesCount: 0,
+  articles: [],
+  articlesCount: 0,
   errors: [],
   isLoading: false,
   articleQuery: {
     offset: 0,
     limit: 10,
     tags: [],
-    author: '',
-    favorited: ''
+    author: ''
   },
   tags: [],
   currentTags: []

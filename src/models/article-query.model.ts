@@ -3,5 +3,4 @@ export interface ArticleQuery {
   limit: number
   tags: string[]
   author: string
-  favorited: string
 }
