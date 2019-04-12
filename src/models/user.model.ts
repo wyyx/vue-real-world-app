@@ -1,8 +1,7 @@
 export interface User {
-  id: number
+  id?: number
   email: string
-  createdAt: string
-  updatedAt: string
+  password?: string
   username: string
   bio: any
   image: string

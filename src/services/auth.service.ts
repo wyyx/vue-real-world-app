@@ -12,6 +12,6 @@ export const authService = {
     return http.get('user')
   },
   updateUser(user: User) {
-    return http.put('users', { user })
+    return http.put('user', { user })
   }
 }

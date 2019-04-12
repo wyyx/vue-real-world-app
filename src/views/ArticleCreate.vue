@@ -3,6 +3,7 @@
     <div class="container page">
       <div class="row ">
         <div class="col-md-10 offset-md-1 col-xs-12">
+          <h2 class="text-xs-center">Create New Article</h2>
           <form>
             <fieldset>
               <fieldset class="form-group">
@@ -39,14 +40,11 @@
                 ></textarea>
               </fieldset>
               <fieldset class="form-group">
-                <input
+                <Chips
                   v-model="tagList"
                   name="tagList"
                   data-vv-as="TagList"
-                  type="text"
-                  class="form-control"
-                  placeholder="Enter tags"
-                />
+                ></Chips>
                 <div class="tag-list"></div>
               </fieldset>
               <button
@@ -54,7 +52,10 @@
                 type="button"
                 @click.prevent="save"
               >
-                Publish Article
+                <span v-if="isPending">
+                  <font-awesome-icon class="fa-spin" icon="spinner" />
+                </span>
+                <span v-else>Publish Article</span>
               </button>
             </fieldset>
           </form>
@@ -67,9 +68,16 @@
 import Vue from 'vue'
 import { createArticleAction } from '@/store/article/article.actions'
 import { getGlobalPath } from '@/store'
-import { articleModulePath } from '@/store/article/article.paths'
+import { articleModulePath, isPending } from '@/store/article/article.paths'
+import Chips from '@/components/Chips.vue'
+import { get } from 'vuex-pathify'
+import { authModulePath, username } from '../store/auth/auth.paths'
 
 export default Vue.extend({
+  components: {
+    Chips
+  },
+
   data: function() {
     return {
       title: '',
@@ -78,21 +86,40 @@ export default Vue.extend({
       tagList: ['dragon']
     }
   },
+  computed: {
+    ...get(authModulePath, {
+      username
+    }),
+    ...get(articleModulePath, {
+      isPending
+    })
+  },
+
   methods: {
     save() {
       this.$validator.validate().then(valid => {
         if (valid) {
-          console.log('SUCCESS!! :-)\n\n' + JSON.stringify(this.$data))
+          console.log('valid :-)\n' + JSON.stringify(this.$data))
 
-          this.$store.dispatch(
-            getGlobalPath(articleModulePath, createArticleAction),
-            {
+          this.$store
+            .dispatch(articleModulePath + createArticleAction, {
               title: this.title,
               description: this.description,
               body: this.body,
               tagList: this.tagList
-            }
-          )
+            })
+            .then(response => {
+              this.$router.push({
+                name: 'success',
+                params: {
+                  message: '恭喜你，成功创建一篇文章！',
+                  firstTitle: '查看我的文章',
+                  firstRoute: `/@${(this as any).username}`,
+                  secondTitle: '继续创建',
+                  secondRoute: '/editor'
+                }
+              })
+            })
         }
       })
     }

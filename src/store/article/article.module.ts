@@ -12,6 +12,7 @@ export interface ArticleState {
   articleQuery: ArticleQuery
   tags: string[]
   currentTags: string[]
+  isPending: boolean
 }
 
 export const initialArticleState: ArticleState = {
@@ -26,7 +27,8 @@ export const initialArticleState: ArticleState = {
     author: ''
   },
   tags: [],
-  currentTags: []
+  currentTags: [],
+  isPending: false
 }
 
 const autoMutations = make.mutations(initialArticleState)

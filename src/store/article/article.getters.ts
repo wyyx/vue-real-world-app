@@ -6,6 +6,5 @@ export const articleGetters = {
   [authors](state, getters) {
     const articleList: Article[] = getters[articles]
     return uniq(articleList.map(a => a.author.username))
-    return []
   }
 }

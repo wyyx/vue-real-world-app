@@ -8,27 +8,13 @@ import '@/router/router.guard'
 import VeeValidate, { Validator } from 'vee-validate'
 // import filters
 import '@/filters'
-// import fontawesome lib
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faSpinner,
-  faCog,
-  faSignOutAlt,
-  faPlus
-} from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+// import fontawesome
+import './fontawesome'
 
 // add bootstrap and related libs
 import 'jquery/dist/jquery.min'
 import 'popper.js/dist/popper.min'
 import 'bootstrap/dist/js/bootstrap.min'
-
-// add fontawesome icons
-library.add(faSpinner)
-library.add(faCog)
-library.add(faSignOutAlt)
-library.add(faPlus)
-Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 // save store initial state
 localStorage.setItem('initialState', JSON.stringify(store.state))

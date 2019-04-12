@@ -6,7 +6,8 @@ import {
   articleQuery,
   tags,
   articles,
-  articlesCount
+  articlesCount,
+  isPending
 } from './article.paths'
 
 // fetch global articles
@@ -152,15 +153,23 @@ export const actions = {
     commit(articleQuery, { ...getters[articleQuery], ...payload })
   },
   // create article
-  [createArticleAction]({ dispatch }, article: Article) {
-    articleService
-      .create(article)
-      .then(response => {
-        dispatch(createArticleSuccessAction, response.data.article)
-      })
-      .catch(error => {
-        dispatch(createArticleFailAction)
-      })
+  [createArticleAction]({ dispatch, commit }, article: Article) {
+    commit(isPending, true)
+
+    return new Promise((resolve, reject) => {
+      articleService
+        .create(article)
+        .then(response => {
+          dispatch(createArticleSuccessAction, response.data.article)
+          resolve('success')
+          commit(isPending, false)
+        })
+        .catch(error => {
+          dispatch(createArticleFailAction)
+          reject('fail')
+        })
+        .finally(() => commit(isPending, false))
+    })
   },
   [createArticleSuccessAction]({ dispatch, commit }, payload) {},
   [createArticleFailAction]({ dispatch }) {},

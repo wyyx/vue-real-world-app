@@ -7,21 +7,26 @@
             <img :src="profile.image" class="user-img" />
             <h4>{{ username }}</h4>
             <p>
-              Cofounder @GoThinkster, lived in Aol's HQ for a few months, kinda
-              looks like Peeta from the Hunger Games
+              {{ profile.bio }}
             </p>
 
-            <button
-              @click="setFollow()"
-              v-if="currentUser !== username"
-              class="btn btn-sm btn-outline-secondary action-btn"
-            >
-              <span v-if="isFollowed"> &nbsp; Unfollow {{ username }}</span>
-              <span v-else>
-                <font-awesome-icon icon="plus" /> &nbsp; Follow
-                {{ username }}</span
+            <div class="follow-wrapper">
+              <button
+                @click="setFollow()"
+                v-if="currentUser !== username"
+                class="btn btn-sm"
+                :class="{
+                  'btn-outline-primary': !isFollowed,
+                  'btn-outline-secondary': isFollowed
+                }"
               >
-            </button>
+                <span v-if="isFollowed"> &nbsp; Unfollow {{ username }}</span>
+                <span v-else>
+                  <font-awesome-icon icon="plus" /> &nbsp; Follow
+                  {{ username }}</span
+                >
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -69,6 +74,17 @@
               ></ArticleList>
             </div>
           </div>
+          <!-- pagination -->
+          <div class="pagination-wrapper" v-show="!isLoading">
+            <Pagination
+              class="pagination"
+              :totalItems="articlesCount"
+              :currentPage="1"
+              :visiblePages="5"
+              :showFirstAndLastNavigator="true"
+              @page="onPageUpdate($event)"
+            ></Pagination>
+          </div>
         </div>
       </div>
     </div>
@@ -83,7 +99,8 @@ import {
   isLoading,
   articleQuery,
   articles,
-  articlesCount
+  articlesCount,
+  articleModulePath
 } from '@/store/article/article.paths'
 import { getGlobalPath } from '../store'
 import {
@@ -91,22 +108,29 @@ import {
   unfollowAction,
   followAction
 } from '../store/common/common.actions'
-import { articleModulePath } from '../store/article/article.paths'
 import { FeedType } from '../models/article.model'
 import {
   fetchFavoriteArticlesAction,
   fetchMyArticlesAction
 } from '../store/article/article.actions'
 import ArticleList from '@/components/ArticleList.vue'
+import Pagination from '@/components/Pagination.vue'
 import { username, authModulePath } from '../store/auth/auth.paths'
+import { Page } from '../models/page.model'
 
 export default Vue.extend({
   components: {
-    ArticleList
+    ArticleList,
+    Pagination
   },
   data: function() {
     return {
-      currentFeed: 'my'
+      currentFeed: 'my',
+      articleQuery: {
+        username: this.username,
+        offset: 0,
+        limit: 0
+      }
     }
   },
   props: {
@@ -124,28 +148,48 @@ export default Vue.extend({
     }),
     ...get(articleModulePath, {
       isLoading,
-      articleQuery,
       articles,
       articlesCount
     })
   },
   watch: {
     currentFeed(newVal, oldVal) {
-      this.loadArticles()
+      this.loadArticles(this.articleQuery)
+    },
+    username(newVal, oldVal) {
+      this.articleQuery.username = newVal
+      this.updateProfile()
     }
   },
+  created() {
+    this.$store.dispatch(commonModulePath + fetchProfileAction, this.username)
+  },
   methods: {
-    loadArticles() {
+    onPageUpdate({ page, pageSize }: Page) {
+      const newOffset = (page - 1) * pageSize
+      const newLimit = pageSize
+
+      this.articleQuery = {
+        username: this.username,
+        offset: newOffset,
+        limit: newLimit
+      }
+
+      this.loadArticles(this.articleQuery)
+    },
+    loadArticles(params) {
       switch (this.currentFeed) {
         case FeedType.My:
-          this.$store.dispatch(articleModulePath + fetchMyArticlesAction, {
-            username: this.username
-          })
+          this.$store.dispatch(
+            articleModulePath + fetchMyArticlesAction,
+            params
+          )
+
           break
         case FeedType.Favorite:
           this.$store.dispatch(
             articleModulePath + fetchFavoriteArticlesAction,
-            { username: this.username }
+            params
           )
           break
         default:
@@ -159,12 +203,16 @@ export default Vue.extend({
       } else {
         this.$store.dispatch(commonModulePath + followAction, this.username)
       }
+    },
+    updateProfile() {
+      this.$store.dispatch(commonModulePath + fetchProfileAction, this.username)
+      this.loadArticles(this.articleQuery)
     }
-  },
-  created() {
-    const vm: any = this
-    this.$store.dispatch(commonModulePath + fetchProfileAction, this.username)
-    this.loadArticles()
   }
 })
 </script>
+<style lang="scss" scoped>
+.follow-wrapper {
+  text-align: right;
+}
+</style>

@@ -1,20 +1,18 @@
 import { http } from './http.service'
-import { Comment } from '@/models/comment.model'
+import { CommentsResponse } from '@/models/comment.model'
 
-export const CommentsService = {
-  get(articleId: string) {
+export const commentService = {
+  getComments(articleId: string) {
     if (typeof articleId !== 'string') {
       throw new Error('article id required to fetch comments')
     }
-    return http.get(`articles/${articleId}/comments`)
+    return http.get<CommentsResponse>(`articles/${articleId}/comments`)
   },
-
-  post(articleId: string, comment: Comment) {
-    return http.post(`articles/${articleId}/comments`, {
+  post(slug: string, comment: string) {
+    return http.post(`articles/${slug}/comments`, {
       comment: { body: comment }
     })
   },
-
   destroy(slug, commentId) {
     return http.delete(`articles/${slug}/comments/${commentId}`)
   }

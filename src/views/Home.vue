@@ -46,20 +46,10 @@
                 v-show="!isLoading"
                 :articles="articles"
               ></ArticleList>
-              <div class="pagination-wrapper">
-                <Pagination
-                  class="pagination"
-                  :totalItems="articlesCount"
-                  :currentPage="1"
-                  :visiblePages="5"
-                  :showFirstAndLastNavigator="true"
-                  @page="onPageUpdate($event)"
-                ></Pagination>
-              </div>
             </div>
           </div>
           <!-- pagination -->
-          <div class="pagination-wrapper">
+          <div class="pagination-wrapper" v-show="!isLoading">
             <Pagination
               class="pagination"
               :totalItems="articlesCount"
@@ -267,7 +257,6 @@ export default Vue.extend({
 }
 
 .pagination {
-  position: fixed;
   bottom: 10px;
   margin: 0px !important;
 }

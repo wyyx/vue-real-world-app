@@ -9,8 +9,8 @@
               Have an account?
             </router-link>
           </p>
-          <ul class="error-messages" v-if="ERRORS.length > 0">
-            <li v-for="error in errors" :key="error" v-text="error">
+          <ul class="error-messages" v-if="authErrors.length > 0">
+            <li v-for="error in authErrors" :key="error" v-text="error">
               That email is already taken
             </li>
           </ul>
@@ -101,7 +101,11 @@
 <script lang="ts">
 import Vue from 'vue'
 import { get } from 'vuex-pathify'
-import { authModulePath, errors, isRegistering } from '@/store/auth/auth.paths'
+import {
+  authModulePath,
+  authErrors,
+  isRegistering
+} from '@/store/auth/auth.paths'
 import { registerAction } from '@/store/auth/auth.actions'
 import { getGlobalPath } from '@/store'
 
@@ -115,7 +119,7 @@ export default Vue.extend({
   },
   computed: {
     ...get(authModulePath, {
-      errors,
+      authErrors,
       isRegistering
     })
   },
