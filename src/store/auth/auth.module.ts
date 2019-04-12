@@ -4,17 +4,26 @@ import { User } from '@/models/user.model'
 import { make } from 'vuex-pathify'
 
 export interface AuthState {
-  errors: string[]
+  authErrors: string[]
   user: User
   isLogging: boolean
   isRegistering: boolean
+  isPending: boolean
 }
 
 const initialAuthState: AuthState = {
-  errors: [],
-  user: null,
+  authErrors: [],
+  user: {
+    id: null,
+    email: '',
+    username: '',
+    bio: '',
+    image: '',
+    token: ''
+  },
   isLogging: false,
-  isRegistering: false
+  isRegistering: false,
+  isPending: false
 }
 
 const autoMutations = make.mutations(initialAuthState)

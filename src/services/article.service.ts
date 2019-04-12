@@ -38,22 +38,30 @@ export const articleService = {
       params
     })
   },
-  getMyArticles(params: { username: string }) {
+  getMyArticles(params: { username: string; offset: number; limit: number }) {
     return http.get<ArticlesResponse>('articles', {
       params: {
-        author: params.username
+        author: params.username,
+        offset: params.offset,
+        limit: params.limit
       }
     })
   },
-  getFavoriteArticles(params: { username: string }) {
+  getFavoriteArticles(params: {
+    username: string
+    offset: number
+    limit: number
+  }) {
     return http.get('articles', {
       params: {
-        favorited: params.username
+        favorited: params.username,
+        offset: params.offset,
+        limit: params.limit
       }
     })
   },
   getArticleById(id: string) {
-    return http.get(`articles/${id}`)
+    return http.get<ArticleResponse>(`articles/${id}`)
   },
   create(article: Article) {
     return http.post('articles', { article })

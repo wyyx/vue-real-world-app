@@ -3,7 +3,7 @@ import { AuthState } from './auth.module'
 
 export const authGetters = {
   [isAuthenticated](state: AuthState, getters): boolean {
-    return !!state.user
+    return !!state.user && !!state.user.token
   },
   [username](state: AuthState, getters) {
     return state.user && state.user.username

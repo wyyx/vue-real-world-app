@@ -3,7 +3,13 @@ import { router } from '@/router/router'
 import { authService } from '@/services/auth.service'
 import { setOrUpdateHeader } from '@/services/http.service'
 import { jwtService } from '@/services/jwt.service'
-import { isLogging, user, errors, isRegistering } from './auth.paths'
+import {
+  isLogging,
+  user,
+  authErrors,
+  isRegistering,
+  isPending
+} from './auth.paths'
 
 export const loginAction = 'loginAction'
 export const loginSuccessAction = 'loginSuccessAction'
@@ -14,34 +20,38 @@ export const registerSuccessAction = 'registerSuccessAction'
 export const registerFailAction = 'registerFailAction'
 export const checkAuthAction = 'checkAuthAction'
 export const updateUserAction = 'updateUserAction'
-export const updateUserSuccessAction = 'updateUserAction'
-export const updateUserFailAction = 'updateUserAction'
+export const updateUserSuccessAction = 'updateUserSuccessAction'
+export const updateUserFailAction = 'updateUserFailAction'
 
 export const authActions = {
   // login
   [loginAction]({ dispatch, commit }, credentials) {
     commit(isLogging, true)
 
-    authService
-      .login(credentials)
-      .then(response => {
-        jwtService.saveToken(response.data.user.token)
-        setOrUpdateHeader()
+    return new Promise((resolve, reject) => {
+      authService
+        .login(credentials)
+        .then(response => {
+          jwtService.saveToken(response.data.user.token)
+          setOrUpdateHeader()
 
-        dispatch(loginSuccessAction, response.data.user)
-      })
-      .then(() => router.push({ name: 'home' }))
-      .catch(error => {
-        dispatch(loginFailAction)
-      })
-      .finally(() => commit(isLogging, false))
+          dispatch(loginSuccessAction, response.data.user)
+          resolve()
+        })
+        .catch(error => {
+          dispatch(loginFailAction)
+
+          reject()
+        })
+        .finally(() => commit(isLogging, false))
+    })
   },
   [loginSuccessAction]({ dispatch, commit }, payload) {
     commit(user, payload)
-    commit(errors, [])
+    commit(authErrors, [])
   },
   [loginFailAction]({ dispatch, commit }) {
-    commit(errors, ['Email or password is not wrong'])
+    commit(authErrors, ['Email or password is not wrong'])
   },
   // logout
   [logoutAction]({ dispatch, commit }) {
@@ -76,7 +86,7 @@ export const authActions = {
       .finally(() => commit(isRegistering, false))
   },
   [registerFailAction]({ dispatch, commit }) {
-    commit(errors, ['Email has been taken'])
+    commit(authErrors, ['Email has been taken'])
   },
   // check auth
   [checkAuthAction]({ dispatch, commit }) {
@@ -95,15 +105,24 @@ export const authActions = {
   },
   // update user
   [updateUserAction]({ dispatch, commit }, user: User) {
-    authService
-      .updateUser(user)
-      .then(({ data }) => {
-        dispatch(updateUserSuccessAction, data.user)
-      })
-      .catch(err => {
-        dispatch(updateUserFailAction)
-      })
+    commit(isPending, true)
+
+    return new Promise((resolve, reject) => {
+      authService
+        .updateUser(user)
+        .then(({ data }) => {
+          dispatch(updateUserSuccessAction, data.user)
+          resolve()
+        })
+        .catch(err => {
+          dispatch(updateUserFailAction)
+          reject()
+        })
+        .finally(() => commit(isPending, false))
+    })
   },
-  [updateUserSuccessAction]({ dispatch, commit }, user: User) {},
+  [updateUserSuccessAction]({ dispatch, commit }, payload) {
+    commit(user, payload)
+  },
   [updateUserFailAction]({ dispatch, commit }) {}
 }

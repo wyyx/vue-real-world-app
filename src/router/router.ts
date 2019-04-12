@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/views/Home.vue'
+import { authGuard } from './auth.guard'
 
 Vue.use(Router)
 
@@ -26,6 +27,7 @@ export const router = new Router({
     {
       path: '/settings',
       name: 'settings',
+      beforeEnter: authGuard,
       component: () =>
         import(/* webpackChunkName: "settings" */ '@/views/Settings.vue')
     },
@@ -57,13 +59,21 @@ export const router = new Router({
       name: 'article-create',
       path: '/editor',
       props: true,
+      beforeEnter: authGuard,
       component: () => import('@/views/ArticleCreate.vue')
     },
     {
       name: 'article-edit',
       path: '/editor/:articleId',
       props: true,
+      beforeEnter: authGuard,
       component: () => import('@/views/ArticleEdit.vue')
+    },
+    {
+      name: 'success',
+      path: '/success',
+      props: true,
+      component: () => import('@/views/Success.vue')
     }
   ]
 })

@@ -13,6 +13,7 @@ export const articleQueryOffset = 'articleQuery@offset'
 export const articleQueryTags = 'articleQuery@tags'
 export const articleQueryAuthor = 'articleQuery@author'
 export const currentTags = 'currentTags'
+export const isPending = 'isPending'
 
 // custom paths
 export const authors = 'authors'
