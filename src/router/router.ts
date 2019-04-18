@@ -64,7 +64,7 @@ export const router = new Router({
     },
     {
       name: 'article-edit',
-      path: '/editor/:articleId',
+      path: '/editor/:slug',
       props: true,
       beforeEnter: authGuard,
       component: () => import('@/views/ArticleEdit.vue')

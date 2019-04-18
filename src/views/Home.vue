@@ -84,6 +84,7 @@
               :multiSelect="false"
               ref="currentTags"
               :tags="currentTags"
+              :initSelectedTags="currentTags"
               title="Current Tags"
               @tags="onCurrentTagsChange($event)"
             ></TagWall>
@@ -123,7 +124,7 @@ import {
 import { isAuthenticated, authModulePath } from '@/store/auth/auth.paths'
 import { mapGetters } from 'vuex'
 import { get } from 'vuex-pathify'
-import { getGlobalPath } from '@/store'
+import store from '@/store'
 import { FeedType } from '../models/article.model'
 import { Page } from '../models/page.model'
 
@@ -186,6 +187,7 @@ export default Vue.extend({
       store.set(articleModulePath + articleQueryAuthor, '')
 
       this.clearAuthorTags()
+      this.clearCurrentTags()
     },
 
     onAuthorTagsChange(tags) {
@@ -194,6 +196,7 @@ export default Vue.extend({
       store.set(articleModulePath + articleQueryAuthor, tags[0])
 
       this.clearPopularTags()
+      this.clearCurrentTags()
     },
     onCurrentTagsChange(tags: string[]) {
       console.log('tags', tags)
@@ -214,6 +217,9 @@ export default Vue.extend({
     },
     clearCurrentTags() {
       const currentTagsRef: any = this.$refs.currentTags
+      const store: any = this.$store
+
+      store.set(articleModulePath + currentTags, [])
       currentTagsRef.clear()
     },
     loadArticles(params) {

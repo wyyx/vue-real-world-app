@@ -83,7 +83,7 @@ export default Vue.extend({
       title: '',
       description: '',
       body: '',
-      tagList: ['dragon']
+      tagList: []
     }
   },
   computed: {
@@ -94,7 +94,6 @@ export default Vue.extend({
       isPending
     })
   },
-
   methods: {
     save() {
       this.$validator.validate().then(valid => {

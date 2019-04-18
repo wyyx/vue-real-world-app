@@ -50,6 +50,11 @@ export default Vue.extend({
       }
     }
   },
+  watch: {
+    initSelectedTags(newVal, oldVal) {
+      this.selectedTags = [...newVal]
+    }
+  },
   created() {
     const vm: any = this
     vm.selectedTags = [...vm.initSelectedTags]
@@ -90,7 +95,7 @@ export default Vue.extend({
       this.selectedTags = []
     },
     setSelectedTags(tags: string[]) {
-      this.selectedTags = tags
+      this.selectedTags = [...tags]
     }
   }
 })

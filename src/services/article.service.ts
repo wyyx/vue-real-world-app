@@ -69,7 +69,7 @@ export const articleService = {
   update(id, article: Article) {
     return http.patch(`articles/${id}`, { article })
   },
-  destroy(id: string) {
+  delete(id: string) {
     return http.delete(`articles/${id}`)
   },
   favoriteArticle(slug: string) {

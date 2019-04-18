@@ -51,6 +51,8 @@ export default Vue.extend({
       const store: any = this.$store
       store.set(articleModulePath + articleQueryTags, tags)
       store.set(articleModulePath + currentTags, tags)
+
+      this.$router.push({ name: 'home' })
     }
   }
 })

@@ -43,7 +43,16 @@ export default Vue.extend({
       }
     }
   },
-  created() {},
+  watch: {
+    chips(newVal, oldVal) {
+      this.localChips = newVal
+    }
+  },
+  created() {
+    const vm: any = this
+
+    this.localChips = vm.chips
+  },
   methods: {
     onNewChip(chip: string) {
       this.localChips.push(chip)
@@ -51,8 +60,6 @@ export default Vue.extend({
       this.$emit('change', this.localChips)
       const vm: any = this
       vm.$refs.input.value = ''
-
-      console.log('chips', this.localChips)
     },
     removeChip(chip: string) {
       this.localChips = this.localChips.filter(c => c !== chip)

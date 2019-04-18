@@ -38,6 +38,10 @@ export const updateArticleQueryAction = 'updateArticleQueryAction'
 export const createArticleAction = 'createArticleAction'
 export const createArticleSuccessAction = 'createArticleSuccessAction'
 export const createArticleFailAction = 'createArticleFailAction'
+// update article
+export const updateArticleAction = 'updateArticleAction'
+export const updateArticleSuccessAction = 'updateArticleSuccessAction'
+export const updateArticleFailAction = 'updateArticleFailAction'
 // favorite article
 export const favoriteArticleAction = 'favoriteArticleAction'
 export const favoriteArticleASuccessction = 'favoriteArticleASuccessction'
@@ -173,6 +177,27 @@ export const actions = {
   },
   [createArticleSuccessAction]({ dispatch, commit }, payload) {},
   [createArticleFailAction]({ dispatch }) {},
+  // update article
+  [updateArticleAction]({ dispatch, commit }, article: Article) {
+    commit(isPending, true)
+
+    return new Promise((resolve, reject) => {
+      articleService
+        .update(article.slug, article)
+        .then(response => {
+          dispatch(updateArticleSuccessAction, response.data.article)
+          resolve('success')
+          commit(isPending, false)
+        })
+        .catch(error => {
+          dispatch(updateArticleFailAction)
+          reject('fail')
+        })
+        .finally(() => commit(isPending, false))
+    })
+  },
+  [updateArticleSuccessAction]({ dispatch, commit }, payload) {},
+  [updateArticleFailAction]({ dispatch }) {},
   // favorite article
   [favoriteArticleAction]({ dispatch }, slug: string) {
     articleService

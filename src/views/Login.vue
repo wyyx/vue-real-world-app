@@ -65,7 +65,12 @@
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import { get } from 'vuex-pathify'
-import { authErrors, isLogging, authModulePath } from '@/store/auth/auth.paths'
+import {
+  authErrors,
+  isLogging,
+  authModulePath,
+  isAuthenticated
+} from '@/store/auth/auth.paths'
 import { loginAction } from '@/store/auth/auth.actions'
 import { getGlobalPath } from '@/store'
 
@@ -80,8 +85,21 @@ export default Vue.extend({
   computed: {
     ...get(authModulePath, {
       authErrors,
-      isLogging
+      isLogging,
+      isAuthenticated
     })
+  },
+  watch: {
+    isAuthenticated(newVal, oldVal) {
+      if (newVal) {
+        const targetUrl = this.$route.query.targetUrl
+        if (targetUrl) {
+          this.$router.push(targetUrl as string)
+        } else {
+          this.$router.push({ name: 'home' })
+        }
+      }
+    }
   },
   methods: {
     login() {

@@ -16,13 +16,16 @@
           <span v-if="isAuthor">
             <span class="px-2">
               <button
-                @click="setFollow()"
+                @click="editArticle"
                 class="btn btn-sm btn-outline-primary"
               >
                 <font-awesome-icon icon="pen" />&nbsp;Edit Article
               </button>
             </span>
-            <button @click="setFollow()" class="btn btn-sm btn-outline-primary">
+            <button
+              @click="deleteArticle"
+              class="btn btn-sm btn-outline-primary"
+            >
               <font-awesome-icon icon="trash-alt" />&nbsp;Delete Article
             </button>
           </span>
@@ -43,11 +46,13 @@
       </div>
     </div>
 
+    <!-- article content -->
     <div class="container page">
       <div class="row article-content">
         <div class="col-md-12">
           <h2 id="introducing-ionic">{{ article.description }}</h2>
           <p>{{ article.body }}</p>
+          <TagList :tags="article.tagList" :hasAction="false" />
         </div>
       </div>
 
@@ -117,16 +122,19 @@ import Vue from 'vue'
 import { articleService } from '@/services/article.service'
 import FollowToggler from '@/components/FollowToggler.vue'
 import FavoriteToggler from '@/components/FavoriteToggler.vue'
+import TagList from '@/components/TagList.vue'
 import { get } from 'vuex-pathify'
 import { authModulePath, user, username } from '../store/auth/auth.paths'
 import { commentService } from '@/services/comment.service'
 import { commonModulePath } from '../store/common/common.paths'
 import { postCommentAction } from '../store/common/common.actions'
+import { articleModulePath } from '../store/article/article.paths'
 
 export default Vue.extend({
   components: {
     FollowToggler,
-    FavoriteToggler
+    FavoriteToggler,
+    TagList
   },
   props: {
     slug: {
@@ -172,6 +180,28 @@ export default Vue.extend({
           this.fetchComments(response.data.article.slug)
         })
         .catch(error => {})
+    },
+    deleteArticle() {
+      const vm: any = this
+
+      articleService.delete(this.slug).then(response => {
+        this.$router.push({
+          name: 'success',
+          params: {
+            message: '文章已经删除！',
+            firstTitle: '查看我的文章',
+            firstRoute: `/@${vm.username}`
+          }
+        })
+      })
+    },
+    editArticle() {
+      this.$router.push({
+        name: 'article-edit',
+        params: {
+          slug: this.slug
+        }
+      })
     },
     onReloadArticle() {
       this.fetchArticle()

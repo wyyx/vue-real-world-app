@@ -1,19 +1,35 @@
 <template>
-  <ul class="tag-list">
-    <li
-      v-for="tag in tags"
-      :key="tag"
-      class="tag-default tag-pill tag-outline clickable"
-      :class="{
-        active: activeTag(tag),
-        'shadow-sm': activeTag(tag)
-      }"
-      href="#"
-      @click="toggleTag(tag)"
-    >
-      {{ tag }}
-    </li>
-  </ul>
+  <div>
+    <ul class="tag-list" v-if="hasAction">
+      <li
+        v-for="tag in tags"
+        :key="tag"
+        class="tag-default tag-pill tag-outline clickable"
+        :class="{
+          active: activeTag(tag),
+          'shadow-sm': activeTag(tag)
+        }"
+        href="#"
+        @click="toggleTag(tag)"
+      >
+        {{ tag }}
+      </li>
+    </ul>
+    <ul class="tag-list" v-else>
+      <li
+        v-for="tag in tags"
+        :key="tag"
+        class="tag-default tag-pill tag-outline"
+        :class="{
+          active: activeTag(tag),
+          'shadow-sm': activeTag(tag)
+        }"
+        href="#"
+      >
+        {{ tag }}
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script lang="ts">
@@ -37,6 +53,10 @@ export default Vue.extend({
       }
     },
     multiSelect: {
+      type: Boolean,
+      default: true
+    },
+    hasAction: {
       type: Boolean,
       default: true
     }
@@ -83,9 +103,13 @@ export default Vue.extend({
   }
 })
 </script>
+
 <style lang="scss" scoped>
 .tag-outline:hover {
   border-color: #5cb85c !important;
   color: #5cb85c !important;
+}
+.tag-list {
+  margin: 0px;
 }
 </style>
