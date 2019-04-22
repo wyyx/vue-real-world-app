@@ -256,10 +256,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.logo-font {
-  font-family: 'Quattrocento Sans', sans-serif;
-}
-
 .host {
   position: relative;
 }

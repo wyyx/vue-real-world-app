@@ -91,10 +91,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.navbar-brand {
-  font-family: 'Quattrocento Sans', sans-serif !important;
-}
-
 .nav-item {
   margin: 0 !important;
 }
