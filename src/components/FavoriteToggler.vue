@@ -10,8 +10,7 @@
     <font-awesome-icon icon="heart" />&nbsp;
     <span class="counter"> {{ article.favoritesCount }}&nbsp; </span>
     <span v-if="showTitle">
-      <span v-if="!article.favorited">Favorite Article</span
-      ><span v-else>Unfavorite Article</span>
+      <span v-if="!article.favorited">喜欢</span><span v-else>取消喜欢</span>
     </span>
   </button>
 </template>

@@ -3,7 +3,7 @@
     <div class="container page">
       <div class="row ">
         <div class="col-md-10 offset-md-1 col-xs-12">
-          <h2 class="text-xs-center">Create New Article</h2>
+          <h3 class="text-xs-center">创建文章</h3>
           <form>
             <fieldset>
               <fieldset class="form-group">

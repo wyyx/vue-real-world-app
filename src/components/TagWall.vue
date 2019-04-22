@@ -72,6 +72,7 @@ export default Vue.extend({
       if (this.selectedTags.includes(tag)) {
         this.selectedTags = []
       } else {
+        this.selectedTags = []
         this.selectedTags.push(tag)
       }
 

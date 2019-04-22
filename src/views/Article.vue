@@ -19,14 +19,14 @@
                 @click="editArticle"
                 class="btn btn-sm btn-outline-primary"
               >
-                <font-awesome-icon icon="pen" />&nbsp;Edit Article
+                <font-awesome-icon icon="pen" />&nbsp;编辑文章
               </button>
             </span>
             <button
               @click="deleteArticle"
               class="btn btn-sm btn-outline-primary"
             >
-              <font-awesome-icon icon="trash-alt" />&nbsp;Delete Article
+              <font-awesome-icon icon="trash-alt" />&nbsp;删除文章
             </button>
           </span>
           <!-- follow author and favorite article -->
@@ -69,7 +69,7 @@
                   name="comment"
                   data-vv-as="Comment"
                   v-model="comment"
-                  placeholder="Write a comment..."
+                  placeholder="写一个评论吧..."
                   rows="3"
                 ></textarea>
                 <div v-if="errors.has('comment')" class="invalid-feedback">
@@ -90,7 +90,7 @@
                 class="btn btn-sm btn-primary"
                 @click.prevent="postComment"
               >
-                Post Comment
+                发布评论
               </button>
             </div>
           </form>

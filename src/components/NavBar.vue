@@ -5,41 +5,42 @@
       <ul class="nav navbar-nav pull-xs-right">
         <li class="nav-item">
           <!-- Add "active" class when you're on that page" -->
-          <router-link class="nav-link px-4 active" :to="{ name: 'home' }">
-            Home
+          <router-link class="nav-link px-4" to="/" exact>
+            首页
           </router-link>
         </li>
         <li v-if="isAuthenticated" class="nav-item">
           <router-link
             :to="{ name: 'article-create' }"
+            exact
             class="nav-link px-4"
             href=""
           >
-            <i class="ion-compose"></i>New Article
+            <i class="ion-compose"></i>创建文章
           </router-link>
         </li>
         <li v-if="isAuthenticated" class="nav-item">
-          <router-link class="nav-link px-4" :to="{ name: 'settings' }">
+          <router-link class="nav-link px-4" :to="{ name: 'settings' }" exact>
             <font-awesome-icon icon="cog" />
-            <span class="pl-1">Settings</span>
+            <span class="pl-1">设置</span>
           </router-link>
         </li>
         <template v-if="!isAuthenticated">
           <li class="nav-item">
-            <router-link class="nav-link px-4" :to="{ name: 'login' }">
-              Sign in
+            <router-link class="nav-link px-4" :to="{ name: 'login' }" exact>
+              登陆
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link px-4" :to="{ name: 'register' }">
-              Sign up
+            <router-link class="nav-link px-4" :to="{ name: 'register' }" exact>
+              注册
             </router-link>
           </li>
         </template>
         <li v-if="isAuthenticated" class="nav-item clickable" @click="logout">
           <a class="nav-link px-4">
             <font-awesome-icon icon="sign-out-alt" />
-            <span class="pl-1">Logout</span></a
+            <span class="pl-1">注销</span></a
           >
         </li>
         <li v-if="isAuthenticated" class="nav-item clickable">

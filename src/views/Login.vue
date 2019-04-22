@@ -15,10 +15,10 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <h1 class="text-xs-center">Sign in</h1>
+          <h3 class="text-xs-center">登陆</h3>
           <p class="text-xs-center">
             <router-link :to="{ name: 'register' }">
-              Need an account?
+              注册新用户?
             </router-link>
           </p>
 
@@ -51,7 +51,7 @@
                 <span v-if="isLogging">
                   <font-awesome-icon class="fa-spin" icon="spinner" />
                 </span>
-                <span v-else> Sign in</span>
+                <span v-else>登陆</span>
               </button>
             </div>
           </form>

@@ -64,6 +64,7 @@
         <div class="col-12 col-sm-12 order-1 order-md-12 col-md-3">
           <div class="tags-wrapper p-10">
             <TagWall
+              :multiSelect="false"
               ref="popularTags"
               :tags="tags"
               title="Popular Tags"
@@ -182,6 +183,7 @@ export default Vue.extend({
   },
   methods: {
     onPopularTagsChange(tags) {
+      console.log('TCL: onPopularTagsChange -> tags', tags)
       const store: any = this.$store
       store.set(articleModulePath + articleQueryTags, tags)
       store.set(articleModulePath + articleQueryAuthor, '')

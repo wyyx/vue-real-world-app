@@ -3,10 +3,10 @@
     <div class="container page">
       <div class="row bootstrap">
         <div class="col-md-6 offset-md-3 col-xs-12">
-          <h1 class="text-xs-center">Sign up</h1>
+          <h3 class="text-xs-center">注册</h3>
           <p class="text-xs-center">
             <router-link :to="{ name: 'login' }">
-              Have an account?
+              已经有一个账户?
             </router-link>
           </p>
           <ul class="error-messages" v-if="authErrors.length > 0">
@@ -88,7 +88,7 @@
                 <span v-if="isRegistering"
                   ><font-awesome-icon class="fa-spin" icon="spinner"
                 /></span>
-                <span v-else> Sign up</span>
+                <span v-else>注册</span>
               </button>
             </div>
           </form>

@@ -7,8 +7,8 @@
       'btn-outline-secondary': isFollowing
     }"
   >
-    <span v-if="isFollowing"> &nbsp; Unfollow</span>
-    <span v-else> <font-awesome-icon icon="plus" /> &nbsp;Follow</span>
+    <span v-if="isFollowing"> &nbsp; 取消关注</span>
+    <span v-else> <font-awesome-icon icon="plus" /> &nbsp;关注</span>
   </button>
 </template>
 
