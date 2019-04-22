@@ -23,11 +23,57 @@
               </button>
             </span>
             <button
-              @click="deleteArticle"
+              type="button"
               class="btn btn-sm btn-outline-primary"
+              data-toggle="modal"
+              data-target="#deleteArticleModal"
             >
               <font-awesome-icon icon="trash-alt" />&nbsp;删除文章
             </button>
+            <!-- Modal -->
+            <div
+              class="modal"
+              id="deleteArticleModal"
+              tabindex="-1"
+              role="dialog"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
+            >
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    确定要删除这篇文章吗？
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-dismiss="modal"
+                    >
+                      取消
+                    </button>
+                    <button
+                      @click="deleteArticle"
+                      type="button"
+                      class="btn btn-primary"
+                      data-dismiss="modal"
+                    >
+                      确认删除
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </span>
           <!-- follow author and favorite article -->
           <span v-else>
@@ -129,6 +175,7 @@ import { commentService } from '@/services/comment.service'
 import { commonModulePath } from '../store/common/common.paths'
 import { postCommentAction } from '../store/common/common.actions'
 import { articleModulePath } from '../store/article/article.paths'
+import * as $ from 'jquery'
 
 export default Vue.extend({
   components: {
@@ -240,4 +287,8 @@ export default Vue.extend({
   }
 })
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.modal-body {
+  color: black;
+}
+</style>

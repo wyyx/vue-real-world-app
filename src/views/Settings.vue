@@ -3,7 +3,7 @@
     <div class="container page">
       <div class="row justify-content-center">
         <div class="col-md-10 col-xs-12">
-          <h3 class="text-xs-center">你的设置</h3>
+          <h3 class="text-xs-center">我的设置</h3>
           <form>
             <fieldset>
               <fieldset class="form-group">

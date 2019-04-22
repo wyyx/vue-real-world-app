@@ -13,3 +13,7 @@ body {
 .page-link {
   line-height: unset !important;
 }
+
+.modal-backdrop.show {
+  background-color: rgba(0, 0, 0, 0.3);
+}
