@@ -1,0 +1,28 @@
+{
+  "apps": [
+    {
+      "name": "mediumly",
+      "script": "./server/server.js",
+      "watch": true,
+      "env": {
+        "PORT": 8080,
+        "NODE_ENV": "development"
+      },
+      "env_production": {
+        "PORT": 8004,
+        "NODE_ENV": "production"
+      }
+    }
+  ],
+  "deploy": {
+    "production": {
+      "user": "root",
+      "host": ["149.28.11.92"],
+      "ref": "origin/master",
+      "repo": "https://github.com/wyyx/vue-real-world-app.git",
+      "path": "/www/mediumly/production",
+      "pre-deploy": "git fetch origin master && git reset --hard origin/master",
+      "post-deploy": "yarn start && pm2 startOrRestart ecosystem.json --env production"
+    }
+  }
+}
