@@ -161,6 +161,7 @@
                 <span class="date-posted">{{ comment.createdAt }}</span>
               </span>
               <span
+                v-if="isAuthor"
                 class="clickable"
                 data-toggle="modal"
                 data-target="#deleteCommentModal"

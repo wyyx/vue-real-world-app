@@ -12,7 +12,11 @@
         <div class="col-12 col-sm-12 order-12 order-md-1 col-md-9">
           <div class="feed-toggle">
             <ul class="nav nav-pills outline-active">
-              <li class="nav-item clickable" @click="currentFeed = 'user'">
+              <li
+                v-if="isAuthenticated"
+                class="nav-item clickable"
+                @click="currentFeed = 'user'"
+              >
                 <span
                   class="nav-link"
                   :class="{ active: currentFeed === 'user' }"
