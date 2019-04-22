@@ -270,4 +270,14 @@ export default Vue.extend({
   display: flex;
   justify-content: center;
 }
+
+.banner {
+  background-image: url(../assets/bg.svg) !important ;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  height: 250px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 </style>
