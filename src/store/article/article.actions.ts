@@ -165,7 +165,7 @@ export const actions = {
         .create(article)
         .then(response => {
           dispatch(createArticleSuccessAction, response.data.article)
-          resolve('success')
+          resolve(response.data.article)
           commit(isPending, false)
         })
         .catch(error => {

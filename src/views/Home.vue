@@ -21,7 +21,7 @@
                   class="nav-link"
                   :class="{ active: currentFeed === 'user' }"
                 >
-                  Your Feed
+                  我的订阅
                 </span>
               </li>
               <li class="nav-item clickable" @click="currentFeed = 'global'">
@@ -29,7 +29,7 @@
                   class="nav-link"
                   :class="{ active: currentFeed === 'global' }"
                 >
-                  Global Feed
+                  随便看看
                 </span>
               </li>
             </ul>
@@ -37,14 +37,14 @@
           <!-- feed -->
           <div>
             <div v-if="isLoading" class="article-preview">
-              Loading articles...
+              正在加载 ...
             </div>
             <div>
               <div
                 v-if="!isLoading && articles.length === 0"
                 class="article-preview"
               >
-                No articles are here... yet.
+                没有文章可显示
               </div>
               <ArticleList
                 v-show="!isLoading"
@@ -71,16 +71,17 @@
               :multiSelect="false"
               ref="popularTags"
               :tags="tags"
-              title="Popular Tags"
+              title="流行"
               @tags="onPopularTagsChange($event)"
             ></TagWall>
           </div>
           <div class="tags-wrapper p-10">
             <TagWall
               :multiSelect="false"
+              :showHashTag="false"
               ref="authorTags"
               :tags="authors"
-              title="Author Tags"
+              title="作者"
               @tags="onAuthorTagsChange($event)"
             ></TagWall>
           </div>

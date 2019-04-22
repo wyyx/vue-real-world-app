@@ -7,14 +7,14 @@
         class="page-item"
         :class="{ disabled: isFirstPage }"
       >
-        <a class="page-link" href="#">First</a>
+        <a class="page-link" href="#">第一页</a>
       </li>
       <li
         class="page-item"
         :class="{ disabled: isFirstPage }"
         @click="previousPage"
       >
-        <a class="page-link" href="#">Previous</a>
+        <a class="page-link" href="#">上一页</a>
       </li>
       <li
         class="page-item"
@@ -27,7 +27,7 @@
       </li>
 
       <li class="page-item" :class="{ disabled: isLastPage }" @click="nextPage">
-        <a class="page-link" href="#">Next</a>
+        <a class="page-link" href="#">下一页</a>
       </li>
       <li
         v-if="showFirstAndLastNavigatorLocal"
@@ -35,7 +35,7 @@
         class="page-item"
         :class="{ disabled: isLastPage }"
       >
-        <a class="page-link" href="#">Last</a>
+        <a class="page-link" href="#">最后一页</a>
       </li>
       <li class="page-item bootstrap">
         <div class="dropdown ">
@@ -47,7 +47,7 @@
             aria-haspopup="true"
             aria-expanded="false"
           >
-            Items per page:
+            每页显示:
             {{ itemsPerPageLocal }}
           </button>
           <div

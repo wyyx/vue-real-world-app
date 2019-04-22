@@ -13,7 +13,7 @@
         href="#"
         @click="toggleTag(tag)"
       >
-        {{ tag }}
+        <span v-if="showHashTag">#</span> {{ tag }}
       </a>
     </div>
   </div>
@@ -48,6 +48,10 @@ export default Vue.extend({
       default: function() {
         return []
       }
+    },
+    showHashTag: {
+      type: Boolean,
+      default: true
     }
   },
   watch: {

@@ -5,7 +5,7 @@
       <ul class="nav navbar-nav pull-xs-right">
         <li class="nav-item">
           <!-- Add "active" class when you're on that page" -->
-          <router-link class="nav-link px-4" to="/" exact>
+          <router-link class="nav-link pr-4" to="/" exact>
             首页
           </router-link>
         </li>
@@ -13,39 +13,39 @@
           <router-link
             :to="{ name: 'article-create' }"
             exact
-            class="nav-link px-4"
+            class="nav-link pr-4"
             href=""
           >
             <i class="ion-compose"></i>创建文章
           </router-link>
         </li>
         <li v-if="isAuthenticated" class="nav-item">
-          <router-link class="nav-link px-4" :to="{ name: 'settings' }" exact>
+          <router-link class="nav-link pr-4" :to="{ name: 'settings' }" exact>
             <font-awesome-icon icon="cog" />
             <span class="pl-1">设置</span>
           </router-link>
         </li>
         <template v-if="!isAuthenticated">
           <li class="nav-item">
-            <router-link class="nav-link px-4" :to="{ name: 'login' }" exact>
+            <router-link class="nav-link pr-4" :to="{ name: 'login' }" exact>
               登陆
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link px-4" :to="{ name: 'register' }" exact>
+            <router-link class="nav-link pr-4" :to="{ name: 'register' }" exact>
               注册
             </router-link>
           </li>
         </template>
         <li v-if="isAuthenticated" class="nav-item clickable" @click="logout">
-          <a class="nav-link px-4">
+          <a class="nav-link pr-4">
             <font-awesome-icon icon="sign-out-alt" />
             <span class="pl-1">注销</span></a
           >
         </li>
         <li v-if="isAuthenticated" class="nav-item clickable">
           <router-link
-            class="nav-link px-4"
+            class="nav-link pr-4"
             :to="{
               name: 'profile',
               params: { username }

@@ -62,5 +62,6 @@ export default Vue.extend({
 .article-preview .preview-link ul {
   float: none;
   max-width: 100%;
+  overflow-wrap: break-word;
 }
 </style>

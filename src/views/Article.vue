@@ -3,7 +3,7 @@
     <div class="banner">
       <div class="container">
         <h1>{{ article.title }}</h1>
-        <div class="article-meta">
+        <div class="article-meta d-flex">
           <a href=""><img :src="avatar"/></a>
           <div class="info">
             <a href="" class="author">{{
@@ -13,8 +13,8 @@
           </div>
 
           <!-- edit and delete article -->
-          <span v-if="isAuthor">
-            <span class="px-2">
+          <span v-if="isAuthor" class="d-flex flex-wrap">
+            <span class=" pr-2 pt-1">
               <button
                 @click="editArticle"
                 class="btn btn-sm btn-outline-primary"
@@ -22,14 +22,16 @@
                 <font-awesome-icon icon="pen" />&nbsp;编辑文章
               </button>
             </span>
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-primary"
-              data-toggle="modal"
-              data-target="#deleteArticleModal"
-            >
-              <font-awesome-icon icon="trash-alt" />&nbsp;删除文章
-            </button>
+            <span class=" pt-1">
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-primary"
+                data-toggle="modal"
+                data-target="#deleteArticleModal"
+              >
+                <font-awesome-icon icon="trash-alt" />&nbsp;删除文章
+              </button>
+            </span>
             <!-- Modal -->
             <div
               class="modal"
@@ -78,18 +80,20 @@
             </div>
           </span>
           <!-- follow author and favorite article -->
-          <span v-else>
-            <span class="px-2">
+          <div v-else class="d-flex flex-wrap">
+            <div class="px-2 pt-1">
               <FollowToggler
                 @reload-article="onReloadArticle"
                 :article="article"
               ></FollowToggler>
-            </span>
-            <FavoriteToggler
-              @reload-article="onReloadArticle"
-              :article="article"
-            ></FavoriteToggler>
-          </span>
+            </div>
+            <div class="pt-1">
+              <FavoriteToggler
+                @reload-article="onReloadArticle"
+                :article="article"
+              ></FavoriteToggler>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -99,7 +103,7 @@
       <div class="row article-content">
         <div class="col-md-12">
           <h2 id="introducing-ionic">{{ article.description }}</h2>
-          <p>{{ article.body }}</p>
+          <p class="article-body">{{ article.body }}</p>
           <TagList :tags="article.tagList" :hasAction="false" />
         </div>
       </div>
@@ -366,5 +370,8 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .modal-body {
   color: black;
+}
+.article-content {
+  overflow-wrap: break-word;
 }
 </style>

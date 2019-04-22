@@ -20,9 +20,9 @@
                   'btn-outline-secondary': isFollowed
                 }"
               >
-                <span v-if="isFollowed"> &nbsp; Unfollow {{ username }}</span>
+                <span v-if="isFollowed"> &nbsp; 取消关注 {{ username }}</span>
                 <span v-else>
-                  <font-awesome-icon icon="plus" /> &nbsp; Follow
+                  <font-awesome-icon icon="plus" /> &nbsp; 关注
                   {{ username }}</span
                 >
               </button>
@@ -42,7 +42,7 @@
                   class="nav-link"
                   :class="{ active: currentFeed === 'my' }"
                 >
-                  My Articles
+                  我的文章
                 </span>
               </li>
               <li class="nav-item clickable" @click="currentFeed = 'favorite'">
@@ -50,7 +50,7 @@
                   class="nav-link"
                   :class="{ active: currentFeed === 'favorite' }"
                 >
-                  Favorited Articles
+                  收藏的文章
                 </span>
               </li>
             </ul>
@@ -59,14 +59,14 @@
           <!-- feed -->
           <div>
             <div v-if="isLoading" class="article-preview">
-              Loading articles...
+              正在加载 ...
             </div>
             <div>
               <div
                 v-if="!isLoading && articles.length === 0"
                 class="article-preview"
               >
-                No articles are here... yet.
+                没有文章可显示
               </div>
               <ArticleList
                 v-show="!isLoading"

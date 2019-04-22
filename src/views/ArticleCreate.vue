@@ -13,8 +13,8 @@
                   name="title"
                   data-vv-as="Title"
                   type="text"
-                  class="form-control form-control-lg"
-                  placeholder="Article Title"
+                  class="form-control"
+                  placeholder="文章标题"
                 />
               </fieldset>
               <fieldset class="form-group">
@@ -25,7 +25,7 @@
                   data-vv-as="Description"
                   type="text"
                   class="form-control"
-                  placeholder="What's this article about?"
+                  placeholder="关于什么的文章?"
                 />
               </fieldset>
               <fieldset class="form-group">
@@ -36,7 +36,7 @@
                   data-vv-as="Content"
                   class="form-control"
                   rows="8"
-                  placeholder="Write your article (in markdown)"
+                  placeholder="在这里写文章 (markdown 格式)"
                 ></textarea>
               </fieldset>
               <fieldset class="form-group">
@@ -55,7 +55,7 @@
                 <span v-if="isPending">
                   <font-awesome-icon class="fa-spin" icon="spinner" />
                 </span>
-                <span v-else>Publish Article</span>
+                <span v-else>发布</span>
               </button>
             </fieldset>
           </form>
@@ -71,7 +71,11 @@ import { getGlobalPath } from '@/store'
 import { articleModulePath, isPending } from '@/store/article/article.paths'
 import Chips from '@/components/Chips.vue'
 import { get } from 'vuex-pathify'
-import { authModulePath, username } from '../store/auth/auth.paths'
+import {
+  authModulePath,
+  username,
+  isAuthenticated
+} from '../store/auth/auth.paths'
 
 export default Vue.extend({
   components: {
@@ -88,11 +92,19 @@ export default Vue.extend({
   },
   computed: {
     ...get(authModulePath, {
-      username
+      username,
+      isAuthenticated
     }),
     ...get(articleModulePath, {
       isPending
     })
+  },
+  watch: {
+    isAuthenticated(newVal, oldVal) {
+      if (!newVal) {
+        this.$router.push({ name: 'home' })
+      }
+    }
   },
   methods: {
     save() {
@@ -112,8 +124,8 @@ export default Vue.extend({
                 name: 'success',
                 params: {
                   message: '恭喜你，成功创建一篇文章！',
-                  firstTitle: '查看我的文章',
-                  firstRoute: `/@${(this as any).username}`,
+                  firstTitle: '查看文章',
+                  firstRoute: `/articles/${response.slug}`,
                   secondTitle: '继续创建',
                   secondRoute: '/editor'
                 }
@@ -125,3 +137,5 @@ export default Vue.extend({
   }
 })
 </script>
+
+<style lang="scss" scoped></style>

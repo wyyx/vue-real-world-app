@@ -25,24 +25,24 @@
           <ul class="error-messages">
             <li v-for="error in authErrors" :key="error" v-text="error">
               {{ error }}
-              That email or password is invalid
+              邮箱地址或密码错误！
             </li>
           </ul>
 
           <form>
             <fieldset class="form-group">
               <input
-                class="form-control form-control-lg"
+                class="form-control"
                 type="text"
-                placeholder="Email"
+                placeholder="邮箱"
                 v-model="email"
               />
             </fieldset>
             <fieldset class="form-group">
               <input
-                class="form-control form-control-lg"
+                class="form-control"
                 type="password"
-                placeholder="Password"
+                placeholder="密码"
                 v-model="password"
               />
             </fieldset>

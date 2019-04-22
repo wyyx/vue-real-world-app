@@ -11,29 +11,29 @@
                   v-model="image"
                   class="form-control"
                   type="text"
-                  placeholder="URL of profile picture"
+                  placeholder="头像图片URL"
                 />
               </fieldset>
               <fieldset class="form-group">
                 <input
                   v-model="username"
-                  class="form-control form-control-lg"
+                  class="form-control"
                   type="text"
-                  placeholder="Your Name"
+                  placeholder="我们昵称"
                 />
               </fieldset>
               <fieldset class="form-group">
                 <textarea
                   v-model="bio"
-                  class="form-control form-control-lg"
+                  class="form-control"
                   rows="8"
-                  placeholder="Short bio about you"
+                  placeholder="我的签名"
                 ></textarea>
               </fieldset>
               <fieldset class="form-group">
                 <input
                   v-model="email"
-                  class="form-control form-control-lg"
+                  class="form-control"
                   type="text"
                   placeholder="Email"
                 />
@@ -41,9 +41,9 @@
               <fieldset class="form-group">
                 <input
                   v-model="password"
-                  class="form-control form-control-lg"
+                  class="form-control"
                   type="password"
-                  placeholder="Password"
+                  placeholder="密码"
                 />
               </fieldset>
               <button
@@ -53,7 +53,7 @@
                 <span v-if="isPending">
                   <font-awesome-icon class="fa-spin" icon="spinner" />
                 </span>
-                <span v-else> Update Settings</span>
+                <span v-else>更新设置</span>
               </button>
             </fieldset>
           </form>

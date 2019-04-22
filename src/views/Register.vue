@@ -11,7 +11,7 @@
           </p>
           <ul class="error-messages" v-if="authErrors.length > 0">
             <li v-for="error in authErrors" :key="error" v-text="error">
-              That email is already taken
+              邮箱地址已经被占用
             </li>
           </ul>
 
@@ -19,9 +19,9 @@
             <fieldset class="form-group">
               <input
                 v-model="username"
-                class="form-control form-control-lg"
+                class="form-control"
                 type="text"
-                placeholder="Your Name"
+                placeholder="你的昵称"
               />
             </fieldset>
             <fieldset class="form-group">
@@ -30,9 +30,9 @@
                 name="email"
                 data-vv-as="Email"
                 v-model="email"
-                class="form-control form-control-lg"
+                class="form-control"
                 type="text"
-                placeholder="Email"
+                placeholder="邮箱"
               />
               <div v-if="errors.has('email')" class="invalid-feedback">
                 <p v-for="error in errors.collect('email')" :key="error">
@@ -46,9 +46,9 @@
                 name="password"
                 data-vv-as="Password"
                 v-model="password"
-                class="form-control form-control-lg"
+                class="form-control"
                 type="password"
-                placeholder="Password"
+                placeholder="密码"
                 ref="password"
               />
               <div v-if="errors.has('password')" class="invalid-feedback">
@@ -62,9 +62,9 @@
                 v-validate="'required|confirmed:password'"
                 name="confirmPassword"
                 data-vv-as="Confirming Password"
-                class="form-control form-control-lg"
+                class="form-control"
                 type="password"
-                placeholder="Confirm Password"
+                placeholder="再次输入密码"
               />
               <div
                 v-if="errors.has('confirmPassword')"
