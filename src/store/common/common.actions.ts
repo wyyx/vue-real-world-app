@@ -5,7 +5,8 @@ import { commentService } from '@/services/comment.service'
 export const fetchProfileAction = 'fetchProfileAction'
 export const followAction = 'followAction'
 export const unfollowAction = 'unfollowAction'
-export const postCommentAction = 'addCommentAction'
+export const postCommentAction = 'postCommentAction'
+export const deleteCommentAction = 'deleteCommentAction'
 
 export const commonActions = {
   [fetchProfileAction]({ commit }, username: string) {
@@ -49,7 +50,23 @@ export const commonActions = {
         })
         .catch(error => {
           reject()
-          console.log('unfollow failed', error)
+          console.log('post comment failed', error)
+        })
+    })
+  },
+  [deleteCommentAction](
+    { commit },
+    payload: { slug: string; commentId: string }
+  ) {
+    return new Promise((resolve, reject) => {
+      commentService
+        .delete(payload.slug, payload.commentId)
+        .then(response => {
+          resolve()
+        })
+        .catch(error => {
+          reject()
+          console.log('delete comment failed', error)
         })
     })
   }

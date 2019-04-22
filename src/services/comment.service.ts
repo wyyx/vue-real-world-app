@@ -13,7 +13,7 @@ export const commentService = {
       comment: { body: comment }
     })
   },
-  destroy(slug, commentId) {
+  delete(slug, commentId) {
     return http.delete(`articles/${slug}/comments/${commentId}`)
   }
 }

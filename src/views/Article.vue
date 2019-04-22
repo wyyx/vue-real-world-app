@@ -62,14 +62,16 @@
                     >
                       取消
                     </button>
-                    <button
-                      @click="deleteArticle"
-                      type="button"
-                      class="btn btn-primary"
-                      data-dismiss="modal"
+                    <span class="pl-2">
+                      <button
+                        @click="deleteArticle"
+                        type="button"
+                        class="btn btn-primary"
+                        data-dismiss="modal"
+                      >
+                        确认删除
+                      </button></span
                     >
-                      确认删除
-                    </button>
                   </div>
                 </div>
               </div>
@@ -147,15 +149,71 @@
                 {{ comment.body }}
               </p>
             </div>
-            <div class="card-footer">
-              <a href="" class="comment-author">
-                <img :src="comment.author.image" class="comment-author-img" />
-              </a>
-              &nbsp;
-              <a href="" class="comment-author">
-                {{ comment.author.username }}
-              </a>
-              <span class="date-posted">{{ comment.createdAt }}</span>
+            <div class="card-footer d-flex">
+              <span class="flex-grow-1">
+                <a href="" class="comment-author">
+                  <img :src="comment.author.image" class="comment-author-img" />
+                </a>
+                &nbsp;
+                <a href="" class="comment-author">
+                  {{ comment.author.username }}
+                </a>
+                <span class="date-posted">{{ comment.createdAt }}</span>
+              </span>
+              <span
+                class="clickable"
+                data-toggle="modal"
+                data-target="#deleteCommentModal"
+              >
+                <font-awesome-icon icon="trash-alt" />
+                <span class="pl-1">删除</span>
+              </span>
+              <!-- Modal -->
+              <div
+                class="modal"
+                id="deleteCommentModal"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="exampleModalLabel"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button
+                        type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                      >
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      确定要删除这条评论吗？
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal"
+                      >
+                        取消
+                      </button>
+                      <span class="pl-2">
+                        <button
+                          @click="deleteComment(comment.id)"
+                          type="button"
+                          class="btn btn-primary"
+                          data-dismiss="modal"
+                        >
+                          确认删除
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -173,7 +231,10 @@ import { get } from 'vuex-pathify'
 import { authModulePath, user, username } from '../store/auth/auth.paths'
 import { commentService } from '@/services/comment.service'
 import { commonModulePath } from '../store/common/common.paths'
-import { postCommentAction } from '../store/common/common.actions'
+import {
+  postCommentAction,
+  deleteCommentAction
+} from '../store/common/common.actions'
 import { articleModulePath } from '../store/article/article.paths'
 import * as $ from 'jquery'
 
@@ -283,6 +344,20 @@ export default Vue.extend({
             })
         }
       })
+    },
+    deleteComment(commentId: string) {
+      const vm: any = this
+      const slug: string = vm.article.slug
+
+      this.$store
+        .dispatch(commonModulePath + deleteCommentAction, {
+          slug,
+          commentId
+        })
+        .then(response => {
+          // reload comments
+          this.fetchComments(slug)
+        })
     }
   }
 })
